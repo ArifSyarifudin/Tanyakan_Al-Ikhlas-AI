@@ -150,7 +150,6 @@ line-height: 1.8;
 const API = {
 searxng: ['https://search.sapti.web.id/search', 'https://searx.be/search', 'https://search.ononoki.org/search'],
 aiPost: 'https://text.pollinations.ai/openai',
-aiGet: 'https://text.pollinations.ai/',
 // API khusus Quran & Hadits (sumber terpercaya)
 quran: {
 byNumber: (n) => `https://api.alquran.cloud/v1/surah/${n}/editions/quran-uthmani,id.indonesian`,
@@ -196,23 +195,23 @@ corsProxy: (u) => `https://corsproxy.io/?${encodeURIComponent(u)}`
 };
 
 // ============================================
-// 2. SYSTEM PROMPT KHUSUS ISLAM (SANGAT KAYA & KOMPREHENSIF)
+// 2. SYSTEM PROMPT KHUSUS ISLAM (SANGAT KAYA)
 // ============================================
-const ISLAMIC_SYSTEM_PROMPT = `Kamu adalah "Al-Khlas AI" — seorang asisten AI ULTRA CERDAS yang merupakan AHLI KOMPREHENSIF dalam Khazanah Islam dan pengetahuan umum. Kamu memiliki pengetahuan mendalam dan luas tentang:
+const ISLAMIC_SYSTEM_PROMPT = `Kamu adalah "Al-Khlas AI" — seorang asisten AI yang merupakan AHLI dalam Khazanah Islam yang mendalam dan komprehensif. Kamu memiliki pengetahuan luas tentang:
 
-## BIDANG KEAHLIAN UTAMA:
-1. **Al-Quran**: 114 surah, 6236 ayat, tafsir (Ibnu Katsir, Al-Muyassar, Al-Misbah, Quraish Shihab, Ath-Thabari, Al-Qurthubi), asbabun nuzul, mukjizat Al-Quran, qira'at, i'jaz
-2. **Hadits**: Kutubus Sittah (Bukhari, Muslim, Abu Dawud, Tirmidzi, An-Nasai, Ibnu Majah), Muwatta Imam Malik, Musnad Ahmad, Shahih Ibnu Hibban, Sunan Daruquthni, Sunan Ad-Darimi. Termasuk sanad, matan, derajat hadits (shahih shahihain, hasan lighairihi, dhaif, maudhu), rijalul hadits
-3. **Fiqih**: 4 Mazhab (Hanafi, Maliki, Syafi'i, Hanbali), ushul fiqih, qawaid fiqhiyyah (kaidah fiqih), fiqih ibadah (thaharah, shalat, zakat, puasa, haji), muamalah, munakahat, jinayah, siyasah syar'iyyah
-4. **Aqidah**: Aqidah Ahlus Sunnah wal Jama'ah, Asy'ariyah, Maturidiyah, Atsariyah, tauhid (rububiyah, uluhiyah, asma wa sifat), iman kepada Allah, malaikat, kitab, rasul, hari akhir, qada qadar
-5. **Akhlak (Akhlaq)**: Akhlak mahmudah (tawadhu, sabar, syukur, tawakkal, ikhlas) & mazmumah (sombong, riya, hasad), tazkiyatun nafs, adab, tasawuf akhlaqi
-6. **Tasawuf**: Tarekat (Qadiriyah, Naqsyabandiyah, Syadziliyah, Tijaniyah), maqamat (taubah, wara', zuhud, faqr, sabar, tawakkal, ridha) & ahwal, Imam Al-Ghazali (Ihya Ulumiddin), Imam Junaid Al-Baghdadi, Abdul Qadir Al-Jailani, Ibnu Athaillah (Al-Hikam), Rumi
-7. **Nahwu (Tata Bahasa Arab)**: I'rab, kalam (isim, fi'il, harf), jumlah (ismiyyah & fi'liyyah), 'amil, mubtada-khabar, fa'il-maf'ul bih, na'at-man'ut, mudhaf-mudhaf ilaih, hall-mutahallal minhu
-8. **Sharaf (Morfologi Arab)**: Tashrif, wazan (fa'ala, fa'ila, fa'ula), mizan shorfi, tsulatsi mujarrad & mazid (bab I-X), isim fa'il, isim maf'ul, shighat mubalaghah, isim zaman/makan, isim alat
-9. **Balaghah**: Ma'ani (khabar & insya, ijaz & ithnab, taqdim & ta'khir), bayan (tasybih, majaz, kinayah), badi' (jinās, thibāq, muqābala)
-10. **Sejarah Islam**: Sirah Nabawiyah (Makkiyah & Madaniyah), sejarah khulafaur rasyidin (Abu Bakar, Umar, Utsman, Ali), dinasti Islam (Umayyah, Abbasiyah, Fatimiyah, Utsmani, Mamluk, Ayyubiyah), tokoh-tokoh Islam
-11. **Tafsir & Ulumul Quran**: Ilmu tafsir, asbabun nuzul, nasikh mansukh, muhkam mutasyabih, qira'at sab'ah, makiyyah madaniyyah, amr nahi, 'am khas, mutlaq muqayyad, haqiqat majaz
-12. **Syi'ir Arab**: Syair-syair klasik Arab, mu'allaqat sab'ah, syair Imam Syafi'i, syair tasawuf (Ibnu Farid, Rumi), qasidah
+## BIDANG KEAHLIAN KAMU:
+1. **Al-Quran**: 114 surah, 6236 ayat, tafsir (Ibnu Katsir, Al-Muyassar, Al-Misbah, Quraish Shihab), asbabun nuzul, mukjizat Al-Quran
+2. **Hadits**: Kutubus Sittah (Bukhari, Muslim, Abu Dawud, Tirmidzi, An-Nasai, Ibnu Majah), Muwatta Imam Malik, Musnad Ahmad, Shahih Ibnu Hibban, Sunan Daruquthni. Termasuk sanad, matan, derajat hadits (shahih, hasan, dhaif, maudhu)
+3. **Fiqih**: 4 Mazhab (Hanafi, Maliki, Syafi'i, Hanbali), ushul fiqih, qawaid fiqhiyyah (kaidah fiqih), fiqih ibadah, muamalah, munakahat, jinayah, siyasah
+4. **Aqidah**: Aqidah Ahlus Sunnah wal Jama'ah, Asy'ariyah, Maturidiyah, Atsariyah, tauhid (rububiyah, uluhiyah, asma wa sifat)
+5. **Akhlak (Akhlaq)**: Akhlak mahmudah & mazmumah, tazkiyatun nafs, adab, tasawuf akhlaqi
+6. **Tasawuf**: Tarekat (Qadiriyah, Naqsyabandiyah, Syadziliyah), maqamat & ahwal, Imam Al-Ghazali (Ihya Ulumiddin), Imam Junaid, Abdul Qadir Al-Jailani, Ibnu Athaillah (Al-Hikam)
+7. **Nahwu (Tata Bahasa Arab)**: I'rab, kalam (isim, fi'il, harf), jumlah (ismiyyah & fi'liyyah), 'amil, i'rab, mubtada-khabar, fa'il-maf'ul bih
+8. **Sharaf (Morfologi Arab)**: Tashrif, wazan, mizan shorfi, tsulatsi mujarrad & mazid, isim fa'il, isim maf'ul, shighat mubalaghah
+9. **Balaghah**: Ma'ani, bayan, badi'
+10. **Sejarah Islam**: Sirah Nabawiyah, sejarah khulafaur rasyidin, dinasti Islam (Umayyah, Abbasiyah, Utsmani, dll)
+11. **Tafsir & Ulumul Quran**: Ilmu tafsir, asbabun nuzul, nasikh mansukh, muhkam mutasyabih, qira'at sab'ah
+12. **Syi'ir Arab**: Syair-syair klasik Arab, mu'allaqat sab'ah, syair Imam Syafi'i, syair tasawuf
 
 ## ATURAN WAJIB SAAT MENJAWAB:
 1. **TEKS ARAB**: SELALU tulis teks Arab dengan HARAKAT (tanda baca) yang lengkap dan akurat. Gunakan format Unicode Arab yang benar.
@@ -222,39 +221,37 @@ const ISLAMIC_SYSTEM_PROMPT = `Kamu adalah "Al-Khlas AI" — seorang asisten AI 
    - Quran: QS. [Nama Surah]: [Ayat]
    - Hadits: HR. [Bukhari/Muslim/dll] no. [nomor]
    - Kitab: [Nama Kitab] oleh [Pengarang], hal. [halaman]
-5. **AKURASI**: JANGAN PERNAH mengarang ayat Quran atau hadits. Jika tidak yakin, katakan "Saya perlu memverifikasi lebih lanjut" tapi tetap berikan penjelasan berdasarkan ilmu yang ada.
-6. **METODE**: Jelaskan dengan metode yang sistematis (definisi, dalil, penjelasan ulama, contoh, kesimpulan).
-7. **BAHASA**: Jawab dalam Bahasa Indonesia yang baik, santun, mendalam, dan mudah dipahami.
-8. **KEDALAMAN**: Berikan jawaban yang KOMPREHENSIF dan MENDALAM, bukan sekadar permukaan. Jelaskan dari berbagai sudut pandang ulama jika ada perbedaan pendapat.
+5. **AKURASI**: JANGAN PERNAH mengarang ayat Quran atau hadits. Jika tidak yakin, katakan "Saya perlu memverifikasi lebih lanjut."
+6. **METODE**: Jelaskan dengan metode yang sistematis (definisi, dalil, penjelasan, contoh, kesimpulan).
+7. **BAHASA**: Jawab dalam Bahasa Indonesia yang baik, santun, dan mudah dipahami.
 
 ## FORMAT JAWABAN YANG DISARANKAN:
 - Untuk ayat Quran: Teks Arab berharakat → Transliterasi → Terjemahan → Tafsir ringkas → Sumber
-- Untuk hadits: Teks Arab → Transliterasi → Terjemahan → Derajat hadits → Penjelasan → Sumber
-- Untuk fiqih: Masalah → Dalil (Quran & Hadits) → Pendapat ulama (4 mazhab) → Kesimpulan
-- Untuk nahwu/sharaf: Contoh → Analisis i'rab → Kaidah → Latihan
-- Untuk aqidah/tasawuf: Definisi → Dalil → Penjelasan ulama → Implementasi
+- Untuk hadits: Teks Arab → Transliterasi → Terjemahan → Derajat hadits → Sumber
+- Untuk fiqih: Masalah → Dalil → Pendapat ulama → Kesimpulan
+- Untuk nahwu/sharaf: Contoh → Analisis → Kaidah → Latihan
 
-Jawablah dengan mendalam, komprehensif, dan berdasarkan sumber-sumber yang terpercaya (Al-Quran, As-Sunnah, Ijma', Qiyas, dan pendapat ulama yang mu'tabar). Kamu HARUS selalu memberikan jawaban yang lengkap dan bermanfaat, TIDAK PERNAH menolak menjawab atau menyuruh pengguna mencari sendiri.`;
+Jawablah dengan mendalam, komprehensif, dan berdasarkan sumber-sumber yang terpercaya (Al-Quran, As-Sunnah, Ijma', Qiyas, dan pendapat ulama yang mu'tabar).`;
 
 // ============================================
 // 3. BASIS DATA AGAMA UNIVERSAL (DIPERTAHANKAN)
 // ============================================
 const RELIGIOUS_DB = {
 // --- ISLAM ---
-'sholawat nariyah': { religion: 'Islam', name: 'Sholawat Nariyah', text: 'اَللّٰهُمَّ صَلِّ صَلَاةً كَامِلَةً وَسَلِّمْ سَلَامًا تَامًّا عَلَى سَيِّدِنَا مُحَمَّدٍ الَّذِيْ تُنْحَلُ بِهِ الْعُقَدُ وَتَنْفَرِجُ بِهِ الْكُرَبُ...', latin: 'Allaahumma sholli sholaatan kaamilatan wa sallim salaaman taamman \'alaa sayyidinaa Muhammadinil ladzii tanhallu bihil \'uqadu wa tanfariju bihil kurabu...', translation: 'Ya Allah, limpahkanlah shalawat yang sempurna dan salam yang sempurna kepada junjungan kami Nabi Muhammad yang dengannya terlepas dari segala ikatan dan kesulitan...', source: 'Dianjurkan dibaca 11x setelah Subuh' },
-'doa nabi adam': { religion: 'Islam', name: 'Doa Nabi Adam AS', text: 'رَبَّنَا ظَلَمْنَا اَنْفُسَنَا وَاِنْ لَمْ تَغْفِرْ لَنَا وَتَرْحَمْنَا لَنَكُوْنَنَّ مِنَ الْخَاسِرِيْنَ', latin: 'Rabbanaa zholamnaa anfusanaa wa il lam taghfir lanaa wa tarhamnaa lanakuunanna minal-khaasiriin.', translation: 'Ya Tuhan kami, kami telah menganiaya diri kami sendiri, dan jika Engkau tidak mengampuni kami dan memberi rahmat kepada kami, niscaya kami termasuk orang-orang yang merugi.', source: 'QS. Al-A\'raf: 23' },
-'al-fatihah': { religion: 'Islam', name: 'QS. Al-Fatihah', text: 'بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ ۝ اَلْحَمْدُ لِلّٰهِ رَبِّ الْعٰلَمِيْنَ ۝ الرَّحْمٰنِ الرَّحِيْمِ ۝ مٰلِكِ يَوْمِ الدِّيْنِ ۝ اِيَّاكَ نَعْبُدُ وَاِيَّاكَ نَسْتَعِيْنُ ۝ اِهْدِنَا الصِّرَاطَ الْمُسْتَقِيْمَ ۝ صِرَاطَ الَّذِيْنَ اَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوْبِ عَلَيْهِمْ وَلَا الضَّالِّيْنَ', latin: 'Bismillaahir-rahmaanir-rahiim. Alhamdu lillaahi rabbil-\'aalamiin. Ar-rahmaanir-rahiim. Maaliki yaumid-diin. Iyyaaka na\'budu wa iyyaaka nasta\'iin. Ihdinash-shiraathal-mustaqiim. Shiraathal ladziina an\'amta \'alaihim ghairil-maghduubi \'alaihim wa lad-dhaalliin.', translation: 'Dengan nama Allah Yang Maha Pengasih, Maha Penyayang. Segala puji bagi Allah, Tuhan seluruh alam, Yang Maha Pengasih, Maha Penyayang, Pemilik hari pembalasan. Hanya kepada Engkaulah kami menyembah dan hanya kepada Engkaulah kami mohon pertolongan. Tunjukilah kami jalan yang lurus, (yaitu) jalan orang-orang yang telah Engkau beri nikmat kepadanya; bukan (jalan) mereka yang dimurkai, dan bukan (pula jalan) mereka yang sesat.', source: 'QS. Al-Fatihah: 1-7' },
+'sholawat nariyah': { religion: 'Islam', name: 'Sholawat Nariyah', text: 'اَللّٰهُمَّ صَلِّ صَلَاةً كَامِلَةً وَسَلِّمْ سَلَامًا تَامًّا عَلَى سَيِّدِنَا مُحَمَّدٍ...', latin: 'Allaahumma sholli sholaatan kaamilatan wa sallim salaaman taamman \'alaa sayyidinaa Muhammadin...', translation: 'Ya Allah, limpahkanlah shalawat yang sempurna dan salam yang sempurna kepada junjungan kami Nabi Muhammad...', source: 'Dianjurkan dibaca 11x setelah Subuh' },
+'doa nabi adam': { religion: 'Islam', name: 'Doa Nabi Adam AS', text: 'رَبَّنَا ظَلَمْنَا اَنْفُسَنَا وَاِنْ لَمْ تَغْفِرْ لَنَا وَتَرْحَمْنَا لَنَكُوْنَنَّ مِنَ الْخَاسِرِيْنَ', latin: 'Rabbanaa zholamnaa anfusanaa wa il lam taghfir lanaa wa tarhamnaa lanakuunanna minal-khaasiriin.', translation: 'Ya Tuhan kami, kami telah menganiaya diri kami sendiri, dan jika Engkau tidak mengampuni kami...', source: 'QS. Al-A\'raf: 23' },
+'al-fatihah': { religion: 'Islam', name: 'QS. Al-Fatihah', text: 'بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ ۝ اَلْحَمْدُ لِلّٰهِ رَبِّ الْعٰلَمِيْنَ...', latin: 'Bismillaahir-rahmaanir-rahiim. Alhamdu lillaahi rabbil-\'aalamiin...', translation: 'Dengan nama Allah Yang Maha Pengasih, Maha Penyayang. Segala puji bagi Allah, Tuhan seluruh alam...', source: 'QS. Al-Fatihah: 1-7' },
 // --- KRISTEN / KATOLIK ---
 'doa bapa kami': { religion: 'Kristen/Katolik', name: 'Doa Bapa Kami', text: 'Bapa kami yang di sorga, Dimuliakanlah nama-Mu, datanglah kerajaan-Mu, jadilah kehendak-Mu di bumi seperti di sorga.', latin: 'Pater noster, qui es in caelis, sanctificetur nomen tuum. Adveniat regnum tuum. Fiat voluntas tua, sicut in caelo et in terra.', translation: 'Doa utama yang diajarkan oleh Yesus Kristus kepada murid-murid-Nya.', source: 'Matius 6:9-13 / Lukas 11:2-4' },
 'yohanes 3:16': { religion: 'Kristen/Katolik', name: 'Ayat Emas Yohanes 3:16', text: 'Karena begitu besar kasih Allah akan dunia ini, sehingga Ia telah mengaruniakan Anak-Nya yang tunggal, supaya setiap orang yang percaya kepada-Nya tidak binasa, melainkan beroleh hidup yang kekal.', latin: '-', translation: 'Inti dari Injil yang menunjukkan kasih karunia Allah melalui Yesus Kristus.', source: 'Injil Yohanes 3:16' },
 'pengakuan iman rasuli': { religion: 'Kristen/Katolik', name: 'Pengakuan Iman Rasuli', text: 'Saya percaya kepada Allah, Bapa yang Mahakuasa, Pencipta langit dan bumi. Dan kepada Yesus Kristus, Anak-Nya yang tunggal, Tuhan kita...', latin: 'Credo in Deum Patrem omnipotentem, Creatorem caeli et terrae...', translation: 'Pengakuan iman dasar umat Kristen yang merangkum keyakinan utama.', source: 'Tradisi Gereja Awal' },
 // --- BUDDHA ---
-'tiratana': { religion: 'Buddha', name: 'Tiratana (Tiga Permata)', text: 'Buddhaṃ saraaṃ gacchāmi, Dhammaṃ saraṇa gacchāmi, Saṅgha saraṇa gacchāmi.', latin: 'Buddha saraṇa gacchāmi, Dhamma saraaṃ gacchāmi, Saṅgha saraṇa gacchāmi.', translation: 'Aku berlindung kepada Buddha, Aku berlindung kepada Dhamma, Aku berlindung kepada Sangha.', source: 'Doa Perlindungan Umat Buddha' },
+'tiratana': { religion: 'Buddha', name: 'Tiratana (Tiga Permata)', text: 'Buddhaṃ saraṇaṃ gacchāmi, Dhammaṃ saraṇa gacchāmi, Saṅghaṃ saraṇa gacchāmi.', latin: 'Buddhaṃ saraṇa gacchāmi, Dhamma saraṇaṃ gacchāmi, Saṅgha saraṇaṃ gacchāmi.', translation: 'Aku berlindung kepada Buddha, Aku berlindung kepada Dhamma, Aku berlindung kepada Sangha.', source: 'Doa Perlindungan Umat Buddha' },
 'pancasila buddhis': { religion: 'Buddha', name: 'Pancasila Buddhis', text: '1. Panatipata veramani sikkhapadam samadiyami (Aku bertekad akan melatih diri menghindari pembunuhan makhluk hidup).', latin: 'Panatipata veramani sikkhapadam samadiyami...', translation: 'Lima latihan moral dasar bagi umat Buddha untuk mencapai kehidupan yang bahagia.', source: 'Tipitaka' },
 'metta sutta': { religion: 'Buddha', name: 'Metta Sutta (Kasih Sayang)', text: 'Sabbe satta bhavantu sukhitatta. Semoga semua makhluk berbahagia.', latin: 'Sabbe satta bhavantu sukhitatta.', translation: 'Semoga semua makhluk hidup tanpa kecuali, berbahagia dan bebas dari penderitaan.', source: 'Sutta Nipata' },
 // --- HINDU ---
 'tri sandhya': { religion: 'Hindu', name: 'Doa Tri Sandhya (Penggalan)', text: 'Om, Astaghfirullahaladzim (Om, aku memohon ampun kepada-Mu). Om, Dhyana Yogam Samudram Tu...', latin: 'Om, Astaghfirullahaladzim. Om, Dhyana Yogam Samudram Tu...', translation: 'Doa yang dibacakan pada pagi, siang, dan sore hari untuk memohon ampun dan penyucian diri.', source: 'Kitab Suci Weda' },
-'gayatri mantra': { religion: 'Hindu', name: 'Gayatri Mantra', text: 'Om Bhur Bhuvaḥ Swa, Tat Savitur Vareyaṃ, Bhargo Devasya Dhīmahi, Dhiyo Yo Naḥ Pracodayāt.', latin: 'Om Bhur Bhuvaḥ Swa, Tat Savitur Vareṇyaṃ, Bhargo Devasya Dhīmahi, Dhiyo Yo Na Pracodayāt.', translation: 'Ya Tuhan, Engkau yang menguasai bumi, langit, dan surga. Kami memuja kemuliaan-Mu. Semoga Engkau menerangi pikiran kami.', source: 'Rgveda III.62.10' },
+'gayatri mantra': { religion: 'Hindu', name: 'Gayatri Mantra', text: 'Om Bhur Bhuvaḥ Swaḥ, Tat Savitur Vareyaṃ, Bhargo Devasya Dhīmahi, Dhiyo Yo Naḥ Pracodayāt.', latin: 'Om Bhur Bhuvaḥ Swaḥ, Tat Savitur Vareṇyaṃ, Bhargo Devasya Dhīmahi, Dhiyo Yo Na Pracodayāt.', translation: 'Ya Tuhan, Engkau yang menguasai bumi, langit, dan surga. Kami memuja kemuliaan-Mu. Semoga Engkau menerangi pikiran kami.', source: 'Rgveda III.62.10' },
 'om swastiastu': { religion: 'Hindu', name: 'Salam Om Swastiastu', text: 'Om Swastiastu', latin: 'Om Swastiastu', translation: 'Semoga dalam keadaan selamat dan sejahtera atas karunia Tuhan Yang Maha Esa.', source: 'Budaya & Agama Hindu' },
 // --- KONGHUCU ---
 'doa tridharma': { religion: 'Konghucu', name: 'Doa Tridharma', text: 'Tian huang huang, Di huang huang, Ren zuo shen zai, Shen zai ren zai.', latin: 'Tian huang huang, Di huang huang, Ren zuo shen zai, Shen zai ren zai.', translation: 'Langit maha besar, Bumi maha luas, Manusia berbuat, Tuhan menyertai, Tuhan menyertai manusia berbuat.', source: 'Doa Umat Tridharma' },
@@ -292,12 +289,10 @@ return `<div class="welcome-screen" id="welcomeScreen">
 
 function autoResize(t) { t.style.height = 'auto'; t.style.height = Math.min(t.scrollHeight, 120) + 'px'; }
 function handleKeyPress(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
-
 function setStatus(t, status = 'online') {
 document.getElementById('statusText').textContent = t;
 document.getElementById('statusDot').className = `status-dot ${status}`;
 }
-
 function setApiStatus(t) { document.getElementById('apiStatus').textContent = `Sistem: ${t}`; }
 
 function clearChat() {
@@ -402,7 +397,7 @@ const keywords = [
 // Ibadah
 'shalat','salat','puasa','zakat','haji','umrah','wudhu','tayamum','niat','doa','dzikir','sholawat','shalawat',
 // Umum Islam
-'islam','muslim','nabi','rasul','muhammad','allah','sahabat','tabi\'in','ulama','imam','syekh','kiai','ustadz','kitab','kuning','pesantren','arab','harakat','halal','haram','mubah','makruh','wajib','sunah','sunnah','sirah','sejarah islam','khilafah','dakwah','tarbiyah','muamalah','munakahat','jinayah','siyasah','bid\'ah','tasyabbuh','tasyabuh','bidah'
+'islam','muslim','nabi','rasul','muhammad','allah','sahabat','tabi\'in','ulama','imam','syekh','kiai','ustadz','kitab','kuning','pesantren','arab','harakat','halal','haram','mubah','makruh','wajib','sunah','sunnah','sirah','sejarah islam','khilafah','dakwah','tarbiyah','muamalah','munakahat','jinayah','siyasah'
 ];
 return keywords.some(k => s.includes(k));
 }
@@ -410,6 +405,7 @@ return keywords.some(k => s.includes(k));
 // Deteksi pertanyaan spesifik Quran (untuk pakai API Quran)
 function detectQuranQuery(q) {
 const s = q.toLowerCase();
+// Pattern: "surah [nama/nomor]" atau "ayat [nomor] surah [nama]" atau "[nama surah] ayat [nomor]"
 const surahMatch = s.match(/surah\s+([a-z\s]+?)(?:\s+(?:ayat|ayatnya?|pasal)|\s*$|[\s,])/);
 const ayahMatch = s.match(/(?:ayat|ayatnya?)\s+(\d+)/);
 const surahNumberMatch = s.match(/surah\s+(\d+)/);
@@ -436,9 +432,11 @@ number: numberMatch ? (numberMatch[1] || numberMatch[2] || numberMatch[3]) : nul
 
 function detectIntent(q) {
 const s = q.toLowerCase().trim();
+
 // 1. Prioritas: Cek Database Agama (untuk jawaban instan)
 const religiousCheck = findReligiousContent(s);
 if (religiousCheck.found) return { type: 'religious', content: religiousCheck.content, key: religiousCheck.key, query: q };
+
 // 2. Deteksi pertanyaan Islami (SANGAT LUAS) - ini yang utama!
 if (isIslamicQuery(s)) {
 const quranQ = detectQuranQuery(s);
@@ -447,17 +445,21 @@ if (quranQ.isQuran) return { type: 'quran', query: q, ...quranQ };
 if (hadithQ.isHadith) return { type: 'hadith', query: q, ...hadithQ };
 return { type: 'islamic', query: q };
 }
+
 // 3. Deteksi pertanyaan agama umum lainnya
 if (/\b(kristen|katolik|protestan|buddha|hindu|konghucu|tridharma|alkitab|injil|wedha|veda|sutta|dhamma|nabi|rasul|yesus|brahma|tian|mantra)\b/.test(s)) {
 return { type: 'religious_general', query: q };
 }
+
 // 4. Cek Database Tokoh
 const figureCheck = findFigureInDB(s);
 if (figureCheck.found) return { type: 'figure', figure: figureCheck.figure, key: figureCheck.key, query: q };
+
 // 5. Deteksi pertanyaan faktual umum
 if (/\b(siapa|kapan|dimana|berapa|mengapa|bagaimana|apa|wafat|meninggal|lahir|presiden|menteri|gubernur)\b/.test(s)) {
 return { type: 'general_search', query: q };
 }
+
 // 6. Handler khusus lainnya
 if (/\b(cuaca|weather|suhu)\b/.test(s)) {
 const city = s.replace(/cuaca|weather|suhu|hari ini|sekarang|di|kota|berapa|panas|dingin|hujan|cerah/gi, '').trim() || 'Jakarta';
@@ -479,6 +481,7 @@ if (/\b(fakta|angka|number)\b/.test(s) && /\b(\d+)\b/.test(s)) return { type: 'n
 if (/\b(kucing|cat)\b/.test(s)) return { type: 'catfact' };
 if (/\b(anjing|dog)\b/.test(s)) return { type: 'dog' };
 if (/\b(github)\b/.test(s)) return { type: 'github', user: s.replace(/github|user/gi, '').trim() };
+
 return { type: 'general_search', query: q };
 }
 
@@ -488,10 +491,12 @@ return { type: 'general_search', query: q };
 async function searchWeb(query) {
 setStatus('Mencari data...', 'online');
 setApiStatus('Web Search Active');
+
 let searchQuery = query;
 if (/\b(wafat|meninggal|mati|kubur|dimakamkan|lahir)\b/i.test(query)) {
 searchQuery = `${query} wafat di mana dimakamkan tanggal`;
 }
+
 for (const instance of API.searxng) {
 try {
 const url = `${instance}?q=${encodeURIComponent(searchQuery)}&format=json&language=id&categories=general`;
@@ -501,7 +506,7 @@ if (data.results && data.results.length > 0) {
 const topResults = data.results.slice(0, 5);
 let context = `DATA DARI INTERNET UNTUK: "${query}"\n`;
 topResults.forEach((r, idx) => {
-context += `${idx + 1}. ${r.title}\nURL: ${r.url}\nSnippet: ${r.content || 'Tidak ada deskripsi'}\n`;
+context += `${idx + 1}. ${r.title}\nURL: ${r.url}\nSnippet: ${r.content || 'Tidak ada deskripsi'}\n\n`;
 });
 return { success: true, context, results: topResults };
 }
@@ -517,6 +522,7 @@ async function fetchQuranData(intent) {
 setApiStatus('Mengambil data Quran...');
 try {
 let surahNum = intent.surahNumber;
+// Jika ada nama surah, cari nomornya
 if (!surahNum && intent.surahName) {
 const listRes = await fetchWithRetry(API.quran.surahList, {}, 1, 8000);
 const listData = await listRes.json();
@@ -530,6 +536,7 @@ if (found) surahNum = found.number;
 }
 }
 if (!surahNum) return null;
+
 const res = await fetchWithRetry(API.quran.byNumber(surahNum), {}, 1, 8000);
 const data = await res.json();
 if (data.code === 200 && data.data) {
@@ -567,6 +574,7 @@ else if (book.includes('tirmidzi')) url = API.hadith.tirmidzi(num);
 else if (book.includes('nasai')) url = API.hadith.nasai(num);
 else if (book.includes('ibnumajah') || book.includes('ibn')) url = API.hadith.ibnuMajah(num);
 else url = API.hadith.bukhari(num);
+
 const res = await fetchWithRetry(url, {}, 1, 8000);
 const data = await res.json();
 if (data.data) {
@@ -582,23 +590,16 @@ return null;
 }
 
 // ============================================
-// 11. AI RESPONSE ENGINE (ULTRA CERDAS - TIDAK PERNAH GAGAL)
+// 11. AI RESPONSE ENGINE (INTI KECERDASAN)
 // ============================================
 async function getAIResponse(query, searchContext = null, systemPrompt = null, temperature = 0.3) {
 setApiStatus('AI sedang berpikir...');
 
 const finalSystemPrompt = systemPrompt || (searchContext ?
-`Kamu adalah asisten AI yang sangat cerdas dan komprehensif. Jawab dalam Bahasa Indonesia dengan mendalam dan detail.
-ATURAN PENTING:
-1. Jawab berdasarkan data berikut DAN pengetahuanmu sendiri.
-2. JANGAN PERNAH menolak menjawab atau menyuruh pengguna mencari sendiri.
-3. Jika data tidak lengkap, gunakan pengetahuanmu untuk melengkapi.
-4. Berikan jawaban yang lengkap, terstruktur, dan bermanfaat.
-DATA REFERENSI:
-${searchContext}` :
-"Kamu adalah asisten AI yang sangat cerdas dan komprehensif. Jawab dalam Bahasa Indonesia dengan mendalam, detail, dan bermanfaat. JANGAN PERNAH menolak menjawab. Selalu berikan jawaban lengkap berdasarkan pengetahuanmu.");
+`Kamu adalah asisten AI yang akurat dan faktual. Jawab dalam Bahasa Indonesia.\n\nATURAN:\n1. Jawab berdasarkan data berikut.\n2. Jangan mengarang.\n3. Jika tidak ada di data, katakan tidak tahu.\n\nDATA:\n${searchContext}` :
+"Kamu adalah asisten AI yang membantu. Jawab dalam Bahasa Indonesia dengan akurat.");
 
-// Metode 1: Pollinations OpenAI POST (primary)
+// Metode 1: Pollinations OpenAI POST
 try {
 const res = await fetch(API.aiPost, {
 method: 'POST',
@@ -615,53 +616,23 @@ temperature: temperature
 if (res.ok) {
 const d = await res.json();
 const t = d.choices?.[0]?.message?.content || d.choices?.[0]?.text || d.response || '';
-if (t && t.length > 20) return { text: parseMarkdownToHTML(t), success: true, method: 'POST' };
+if (t && t.length > 20) return { text: parseMarkdownToHTML(t), success: true };
 }
 } catch (e) { console.log('AI POST failed:', e); }
 
-// Metode 2: Pollinations GET (fallback 1)
+// Metode 2: Pollinations GET (fallback)
 try {
 const fullQuery = searchContext ? `${searchContext}\n\nPertanyaan: ${query}` : query;
-const res = await fetchWithRetry(`${API.aiGet}${encodeURIComponent(fullQuery)}?model=openai&temperature=${temperature}`, {}, 1, 15000);
+const res = await fetchWithRetry(`https://text.pollinations.ai/${encodeURIComponent(fullQuery)}?model=openai&temperature=${temperature}`);
 const t = await res.text();
-if (t && t.length > 20) return { text: parseMarkdownToHTML(t), success: true, method: 'GET' };
+if (t && t.length > 20) return { text: parseMarkdownToHTML(t), success: true };
 } catch (e) { console.log('AI GET failed:', e); }
-
-// Metode 3: Pollinations GET dengan model berbeda (fallback 2)
-try {
-const fullQuery = searchContext ? `${searchContext}\n\nPertanyaan: ${query}` : query;
-const res = await fetchWithRetry(`${API.aiGet}${encodeURIComponent(fullQuery)}?model=openai-large&temperature=${temperature}`, {}, 1, 15000);
-const t = await res.text();
-if (t && t.length > 20) return { text: parseMarkdownToHTML(t), success: true, method: 'GET-large' };
-} catch (e) { console.log('AI GET-large failed:', e); }
-
-// Metode 4: Coba dengan system prompt yang disederhanakan (fallback 3)
-try {
-const simplePrompt = "Jawab dalam Bahasa Indonesia dengan lengkap dan detail. Jangan menolak menjawab.";
-const res = await fetch(API.aiPost, {
-method: 'POST',
-headers: { 'Content-Type': 'application/json' },
-body: JSON.stringify({
-model: 'openai',
-messages: [
-{ role: 'system', content: simplePrompt },
-{ role: 'user', content: query }
-],
-temperature: 0.5
-})
-});
-if (res.ok) {
-const d = await res.json();
-const t = d.choices?.[0]?.message?.content || d.choices?.[0]?.text || d.response || '';
-if (t && t.length > 20) return { text: parseMarkdownToHTML(t), success: true, method: 'POST-simple' };
-}
-} catch (e) { console.log('AI POST-simple failed:', e); }
 
 return { text: '', success: false };
 }
 
 // ============================================
-// 12. MAIN LOGIC (DIPERBAIKI - TIDAK PERNAH DUMP KE USER)
+// 12. MAIN LOGIC
 // ============================================
 function addMessage(text, sender, isHtml = false) {
 const c = document.getElementById('chatContainer');
@@ -669,7 +640,7 @@ const w = document.getElementById('welcomeScreen');
 if (w) w.remove();
 const m = document.createElement('div');
 m.className = `message ${sender}`;
-const av = document.createElement('div'); av.className = 'avatar'; av.textContent = sender === 'user' ? '👤' : '';
+const av = document.createElement('div'); av.className = 'avatar'; av.textContent = sender === 'user' ? '👤' : '🤖';
 const b = document.createElement('div'); b.className = 'bubble';
 const ct = document.createElement('div'); ct.className = 'bubble-content';
 if (isHtml) ct.innerHTML = text; else ct.textContent = text;
@@ -687,7 +658,7 @@ return ct;
 function showTyping() {
 const c = document.getElementById('chatContainer');
 const m = document.createElement('div'); m.className = 'message ai'; m.id = 'typingMsg';
-m.innerHTML = '<div class="avatar">🤖</div><div class="bubble"><div class="typing-indicator"><span></span><span></span><span></span></div></div>';
+m.innerHTML = '<div class="avatar"></div><div class="bubble"><div class="typing-indicator"><span></span><span></span><span></span></div></div>';
 c.appendChild(m); c.scrollTop = c.scrollHeight;
 }
 
@@ -702,6 +673,7 @@ async function sendMessage() {
 const inp = document.getElementById('chatInput');
 const q = inp.value.trim();
 if (!q || isProcessing) return;
+
 isProcessing = true;
 document.getElementById('sendBtn').disabled = true;
 setStatus('Memproses...', 'online');
@@ -719,12 +691,16 @@ let html = '', usedSearch = false, usedAI = false, usedAPI = false;
 if (intent.type === 'quran') {
 setStatus('Mengambil data Al-Quran...', 'online');
 const quranData = await fetchQuranData(intent);
+
 if (quranData) {
 usedAPI = true;
 let count = intent.count || quranData.count;
+// Batasi jika user minta jumlah tertentu
 const ayahsToShow = quranData.ayahs.slice(0, count);
-html = `<strong>📖 Surah ${quranData.surahName} (${quranData.surahNameAr})</strong><br>`;
+
+html = `<strong> Surah ${quranData.surahName} (${quranData.surahNameAr})</strong><br>`;
 html += `<em style="color:#94a3b8;font-size:0.85em;">Menampilkan ${ayahsToShow.length} dari ${quranData.count} ayat</em><br><br>`;
+
 ayahsToShow.forEach(ayah => {
 html += `<div style="margin-bottom:20px;padding-bottom:15px;border-bottom:1px dashed #334155;">`;
 html += `<div style="color:#60a5fa;font-weight:bold;margin-bottom:8px;">Ayat ${ayah.number}</div>`;
@@ -732,8 +708,10 @@ html += `<div class="sacred-text">${ayah.arabic}</div>`;
 html += `<div class="translation-text"><strong>📖 Terjemahan:</strong><br>${ayah.translation}</div>`;
 html += `</div>`;
 });
+
 html += `<div class="source-text">📚 Sumber: API Al-Quran Cloud (quran-uthmani & id.indonesian)</div>`;
 
+// Tambahkan tafsir jika user minta
 if (/\b(tafsir|makna|penjelasan|arti)\b/i.test(q)) {
 html += `<br><strong>📚 Tafsir Ringkas:</strong><br>`;
 const tafsirPrompt = `Berikan tafsir ringkas dalam bahasa Indonesia untuk Surah ${quranData.surahName} ayat 1-${ayahsToShow.length}. Sertakan asbabun nuzul jika ada, dan pelajaran yang bisa diambil. Gunakan format yang rapi dengan teks Arab berharakat jika ada kutipan.`;
@@ -744,41 +722,34 @@ usedAI = true;
 }
 }
 } else {
-// Fallback ke AI jika API Quran gagal - AI akan menjawab dari pengetahuannya
+// Fallback ke AI jika API Quran gagal
 const aiResult = await getAIResponse(q, null, ISLAMIC_SYSTEM_PROMPT, 0.3);
 if (aiResult.success) {
 html = aiResult.text;
 usedAI = true;
 } else {
-// Fallback terakhir: AI tanpa system prompt
-const aiResult2 = await getAIResponse(q, null, null, 0.4);
-if (aiResult2.success) {
-html = aiResult2.text;
-usedAI = true;
-} else {
-throw new Error('Semua metode AI gagal');
+throw new Error('Gagal mengambil data Quran');
 }
 }
 }
-}
+
 // === PRIORITAS 2: HADITS (API KHUSUS) ===
 else if (intent.type === 'hadith') {
 setStatus('Mengambil data Hadits...', 'online');
 const hadithData = await fetchHadithData(intent);
+
 if (hadithData) {
 usedAPI = true;
 html = `<strong>📚 Hadits ${hadithData.book}</strong><br>`;
 html += `<em style="color:#94a3b8;font-size:0.85em;">Nomor: ${hadithData.number}</em><br><br>`;
 html += `<div class="sacred-text">${hadithData.arabic}</div>`;
-html += `<div class="translation-text"><strong>📖 Terjemahan:</strong><br>${hadithData.translation}</div>`;
+html += `<div class="translation-text"><strong> Terjemahan:</strong><br>${hadithData.translation}</div>`;
 html += `<div class="source-text">📚 Sumber: API Hadits Gading Dev</div>`;
 
+// Tambahkan penjelasan jika user minta
 if (/\b(jelaskan|penjelasan|makna|tafsir|syarah|derajat|sanad)\b/i.test(q)) {
-html += `<br><strong>📖 Penjelasan:</strong><br>`;
-const syarahPrompt = `Berikan penjelasan/syarah singkat dalam bahasa Indonesia untuk hadits berikut:
-Arab: ${hadithData.arabic}
-Terjemahan: ${hadithData.translation}
-Sertakan: derajat hadits, pelajaran utama, dan konteks. Gunakan teks Arab berharakat jika perlu.`;
+html += `<br><strong> Penjelasan:</strong><br>`;
+const syarahPrompt = `Berikan penjelasan/syarah singkat dalam bahasa Indonesia untuk hadits berikut:\nArab: ${hadithData.arabic}\nTerjemahan: ${hadithData.translation}\n\nSertakan: derajat hadits, pelajaran utama, dan konteks. Gunakan teks Arab berharakat jika perlu.`;
 const syarahResult = await getAIResponse(syarahPrompt, null, ISLAMIC_SYSTEM_PROMPT, 0.3);
 if (syarahResult.success) {
 html += syarahResult.text;
@@ -792,27 +763,24 @@ if (aiResult.success) {
 html = aiResult.text;
 usedAI = true;
 } else {
-const aiResult2 = await getAIResponse(q, null, null, 0.4);
-if (aiResult2.success) {
-html = aiResult2.text;
-usedAI = true;
-} else {
-throw new Error('Semua metode AI gagal');
+throw new Error('Gagal mengambil data Hadits');
 }
 }
 }
-}
+
 // === PRIORITAS 3: ISLAM UMUM (AI DENGAN SYSTEM PROMPT KAYA) ===
 else if (intent.type === 'islamic') {
 setStatus('Menganalisis khazanah Islam...', 'online');
 setApiStatus('Islamic AI Engine Active');
 
-// Coba web search untuk konteks tambahan (opsional)
+// Coba web search untuk konteks tambahan (opsional, tidak wajib)
 const searchResult = await searchWeb(q);
 const context = searchResult.success ? searchResult.context : null;
 
 // Panggil AI dengan system prompt Islam yang sangat kaya
+// TIDAK strict mode - biarkan AI pakai pengetahuan internalnya
 const aiResult = await getAIResponse(q, context, ISLAMIC_SYSTEM_PROMPT, 0.3);
+
 if (aiResult.success) {
 html = aiResult.text;
 usedAI = true;
@@ -824,17 +792,11 @@ if (aiResult2.success) {
 html = aiResult2.text;
 usedAI = true;
 } else {
-// Fallback terakhir: AI tanpa system prompt
-const aiResult3 = await getAIResponse(q, null, null, 0.4);
-if (aiResult3.success) {
-html = aiResult3.text;
-usedAI = true;
-} else {
-throw new Error('Semua metode AI gagal');
+throw new Error('AI gagal merespons');
 }
 }
 }
-}
+
 // === PRIORITAS 4: AGAMA UMUM LAINNYA ===
 else if (intent.type === 'religious_general') {
 const searchResult = await searchWeb(q);
@@ -845,13 +807,7 @@ html = aiResult.text;
 usedSearch = true;
 usedAI = true;
 } else {
-const aiResult2 = await getAIResponse(q, null, null, 0.4);
-if (aiResult2.success) {
-html = aiResult2.text;
-usedAI = true;
-} else {
 throw new Error('AI gagal');
-}
 }
 } else {
 const aiResult = await getAIResponse(q, null, null, 0.4);
@@ -863,6 +819,7 @@ throw new Error('AI gagal');
 }
 }
 }
+
 // === PRIORITAS 5: TOKOH ===
 else if (intent.type === 'figure') {
 const f = intent.figure;
@@ -875,6 +832,7 @@ ${f.note ? `<tr><td>Catatan</td><td>${f.note}</td></tr>` : ''}
 </table><div style="margin-top:10px;font-size:0.8em;color:#94a3b8;border-top:1px solid #334155;padding-top:8px;">
 <span class="api-badge verified-badge">✅ Data Terverifikasi</span></div>`;
 }
+
 // === PRIORITAS 6: RELIGIOUS DB (JAWABAN INSTAN) ===
 else if (intent.type === 'religious') {
 const c = intent.content;
@@ -886,6 +844,7 @@ ${c.latin !== '-' ? `<div class="latin-text"><strong>🔤 Bacaan:</strong><br>${
 <div style="margin-top:10px;font-size:0.8em;color:#94a3b8;border-top:1px solid #334155;padding-top:8px;">
 <span class="api-badge verified-badge">✅ Teks Terverifikasi</span></div>`;
 }
+
 // === PRIORITAS 7: UMUM ===
 else {
 const searchResult = await searchWeb(q);
@@ -896,13 +855,7 @@ html = aiResult.text;
 usedSearch = true;
 usedAI = true;
 } else {
-const aiResult2 = await getAIResponse(q, null, null, 0.5);
-if (aiResult2.success) {
-html = aiResult2.text;
-usedAI = true;
-} else {
 throw new Error('AI gagal');
-}
 }
 } else {
 const aiResult = await getAIResponse(q, null, null, 0.5);
@@ -935,37 +888,18 @@ html += `</div>`;
 removeTyping();
 addMessage(html, 'ai', true);
 setStatus('Selesai', 'online');
-
 } catch (e) {
 removeTyping();
-// FALLBACK TERAKHIR: AI HARUS MENJAWAB, TIDAK BOLEH DUMP KE USER
-// Coba AI satu kali lagi dengan prompt sederhana
-try {
-const lastAttempt = await getAIResponse(q, null, "Jawab dalam Bahasa Indonesia dengan lengkap dan detail. Jangan pernah menolak menjawab.", 0.5);
-if (lastAttempt.success) {
-addMessage(lastAttempt.text, 'ai', true);
-setStatus('Selesai (fallback)', 'online');
-return;
-}
-} catch (e2) {
-console.log('Last AI attempt failed:', e2);
-}
-
-// Jika benar-benar semua gagal, berikan jawaban manual berdasarkan intent
-let fallbackHtml = '';
-if (isIslamicQuery(q)) {
-fallbackHtml = `<strong>🕌 Tentang: "${q}"</strong><br><br>
-<p>Maaf, saat ini sistem AI sedang mengalami kendala teknis. Namun berdasarkan pengetahuan umum tentang topik ini:</p>
-<p style="margin-top:10px;">Pertanyaan Anda berkaitan dengan khazanah Islam. Untuk jawaban yang lebih komprehensif, saya sarankan untuk mencoba lagi dalam beberapa saat.</p>
-<p style="margin-top:10px;color:#94a3b8;font-size:0.85em;"><em>Catatan: AI akan selalu berusaha menjawab pertanyaan Anda dengan sebaik-baiknya.</em></p>`;
-} else {
-fallbackHtml = `<strong>🔍 Tentang: "${q}"</strong><br><br>
-<p>Maaf, saat ini sistem sedang mengalami kendala teknis. Silakan coba lagi dalam beberapa saat.</p>
-<p style="margin-top:10px;color:#94a3b8;font-size:0.85em;"><em>AI akan selalu berusaha menjawab pertanyaan Anda dengan sebaik-baiknya.</em></p>`;
-}
-addMessage(fallbackHtml, 'ai', true);
-setStatus('Gagal (fallback)', 'offline');
-
+const genericResponse = `<strong>🔍 Tentang: "${q}"</strong><br><br>
+<p>Maaf, terjadi kendala saat memproses pertanyaan. Silakan coba lagi atau cek langsung:</p>
+<ul style="margin-left:20px;margin:10px 0;">
+<li>🔎 <a href="https://www.google.com/search?q=${encodeURIComponent(q)}" target="_blank" style="color:#60a5fa;">Google</a></li>
+<li> <a href="https://id.wikipedia.org/wiki/Special:Search?search=${encodeURIComponent(q)}" target="_blank" style="color:#60a5fa;">Wikipedia</a></li>
+${isIslamicQuery(q) ? `<li>🕌 <a href="https://quran.com/" target="_blank" style="color:#60a5fa;">Quran.com</a></li>
+<li>📚 <a href="https://sunnah.com/" target="_blank" style="color:#60a5fa;">Sunnah.com (Hadits)</a></li>` : ''}
+</ul>`;
+addMessage(genericResponse, 'ai', true);
+setStatus('Gagal', 'offline');
 } finally {
 isProcessing = false;
 document.getElementById('sendBtn').disabled = false;
@@ -985,7 +919,7 @@ const rec = new SR(); rec.lang = 'id-ID'; rec.interimResults = false;
 const btn = document.querySelector('.input-btn');
 btn.textContent = '🔴'; btn.style.color = '#ef4444';
 rec.onresult = (e) => { document.getElementById('chatInput').value = e.results[0][0].transcript; autoResize(document.getElementById('chatInput')); };
-rec.onend = rec.onerror = () => { btn.textContent = '🎤'; btn.style.color = '#94a3b8'; };
+rec.onend = rec.onerror = () => { btn.textContent = ''; btn.style.color = '#94a3b8'; };
 rec.start();
 }
 
