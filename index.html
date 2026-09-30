@@ -3,685 +3,1919 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tanyakan Al-Khlas AI - Universal</title>
+<title>AI Pengetahuan Islam & Umum</title>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body {
-font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-background: #0f172a;
-color: #e2e8f0;
-height: 100vh;
-display: flex;
-flex-direction: column;
-overflow: hidden;
-}
-.header {
-background: #1e293b;
-padding: 15px 20px;
-display: flex;
-justify-content: space-between;
-align-items: center;
-border-bottom: 1px solid #334155;
-z-index: 10;
-}
-.header-title { display: flex; align-items: center; gap: 10px; font-size: 1.2em; font-weight: bold; color: #f8fafc; }
-.header-title span { font-size: 1.5em; }
-.btn-icon {
-background: #334155; border: none; color: #cbd5e1; padding: 8px 12px;
-border-radius: 8px; cursor: pointer; font-size: 0.9em; transition: all 0.2s;
-}
-.btn-icon:hover { background: #475569; color: white; }
-.btn-icon.danger:hover { background: #dc2626; }
-.chat-container {
-flex: 1; overflow-y: auto; padding: 20px; display: flex;
-flex-direction: column; gap: 20px; scroll-behavior: smooth;
-}
-.chat-container::-webkit-scrollbar { width: 6px; }
-.chat-container::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
-.message { display: flex; gap: 12px; max-width: 85%; animation: fadeIn 0.3s ease; }
-.message.fade-out { animation: fadeOut 0.3s ease forwards; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; transform: translateY(-10px); } }
-.message.user { align-self: flex-end; flex-direction: row-reverse; }
-.message.ai { align-self: flex-start; }
-.avatar {
-width: 36px; height: 36px; border-radius: 50%;
-display: flex; align-items: center; justify-content: center;
-font-size: 1.2em; flex-shrink: 0;
-}
-.message.user .avatar { background: #3b82f6; }
-.message.ai .avatar { background: #8b5cf6; }
-.bubble { padding: 12px 16px; border-radius: 16px; line-height: 1.6; font-size: 0.95em; }
-.message.user .bubble { background: #3b82f6; color: white; border-bottom-right-radius: 4px; }
-.message.ai .bubble { background: #1e293b; color: #e2e8f0; border: 1px solid #334155; border-bottom-left-radius: 4px; }
-.bubble-content { word-wrap: break-word; }
-.bubble-content img { max-width: 100%; border-radius: 8px; margin: 10px 0; }
-.bubble-content table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 0.9em; }
-.bubble-content td { padding: 6px 10px; border-bottom: 1px solid #334155; }
-.bubble-content td:first-child { font-weight: bold; color: #93c5fd; }
-.bubble-content .sacred-text {
-font-family: 'Traditional Arabic', 'Scheherazade New', 'Amiri', 'Times New Roman', serif;
-font-size: 1.8em;
-direction: rtl;
-text-align: right;
-line-height: 2.2;
-color: #fbbf24;
-padding: 18px;
-background: #0f172a;
-border-radius: 10px;
-margin: 12px 0;
-border: 1px solid #334155;
-}
-.bubble-content .latin-text {
-font-style: italic;
-color: #a5b4fc;
-padding: 12px;
-background: #1e293b;
-border-left: 4px solid #8b5cf6;
-margin: 10px 0;
-border-radius: 4px;
-line-height: 1.8;
-}
-.bubble-content .translation-text {
-color: #d1d5db;
-padding: 12px;
-background: #0f172a;
-border-left: 4px solid #22c55e;
-margin: 10px 0;
-border-radius: 4px;
-line-height: 1.8;
-}
-.bubble-content .source-text { font-size: 0.85em; color: #94a3b8; margin-top: 10px; font-style: italic; }
-.bubble-content pre { background: #0f172a; padding: 12px; border-radius: 8px; overflow-x: auto; margin: 10px 0; border: 1px solid #334155; font-family: 'Consolas', monospace; font-size: 0.9em; }
-.bubble-content code { font-family: 'Consolas', monospace; font-size: 0.9em; color: #fbbf24; background: #334155; padding: 2px 6px; border-radius: 4px; }
-.bubble-actions { display: flex; gap: 5px; margin-top: 8px; opacity: 0; transition: opacity 0.2s; }
-.message:hover .bubble-actions { opacity: 1; }
-.action-btn { background: transparent; border: none; color: #94a3b8; cursor: pointer; font-size: 0.8em; padding: 2px 6px; border-radius: 4px; }
-.action-btn:hover { background: #334155; color: white; }
-.typing-indicator { display: flex; gap: 4px; padding: 5px 0; }
-.typing-indicator span { width: 8px; height: 8px; background: #94a3b8; border-radius: 50%; animation: bounce 1.4s infinite ease-in-out; }
-.typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
-.typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
-@keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
-.input-area { background: #1e293b; padding: 15px 20px; border-top: 1px solid #334155; display: flex; gap: 10px; align-items: flex-end; }
-.input-wrapper { flex: 1; background: #0f172a; border: 1px solid #334155; border-radius: 12px; padding: 5px; display: flex; align-items: flex-end; }
-.input-wrapper:focus-within { border-color: #3b82f6; }
-#chatInput { flex: 1; background: transparent; border: none; color: #e2e8f0; padding: 10px 12px; font-size: 1em; resize: none; max-height: 120px; outline: none; font-family: inherit; }
-.input-btn { background: transparent; border: none; color: #94a3b8; padding: 10px; cursor: pointer; border-radius: 8px; font-size: 1.2em; }
-.input-btn:hover { background: #334155; color: white; }
-#sendBtn { background: #3b82f6; color: white; border: none; padding: 12px 20px; border-radius: 12px; cursor: pointer; font-weight: bold; }
-#sendBtn:hover { background: #2563eb; }
-#sendBtn:disabled { background: #475569; cursor: not-allowed; }
-.welcome-screen { text-align: center; padding: 40px 20px; color: #94a3b8; margin: auto; width: 100%; max-width: 600px; }
-.welcome-screen .logo { font-size: 4em; margin-bottom: 15px; }
-.welcome-screen h2 { color: #f8fafc; margin-bottom: 10px; font-size: 1.8em; }
-.welcome-screen p { color: #64748b; font-size: 0.95em; line-height: 1.6; }
-.welcome-screen .hint { margin-top: 20px; padding: 12px 20px; background: #1e293b; border: 1px dashed #334155; border-radius: 10px; font-size: 0.85em; color: #64748b; }
-.status-bar { background: #1e293b; padding: 5px 20px; font-size: 0.75em; color: #64748b; border-top: 1px solid #334155; display: flex; justify-content: space-between; }
-.status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; }
-.status-dot.online { background: #22c55e; }
-.status-dot.offline { background: #ef4444; }
-.api-badge { display: inline-block; background: #1e40af; color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.75em; margin-left: 8px; }
-.verified-badge { background: #16a34a; }
-@media (max-width: 600px) { .message { max-width: 95%; } .header-title { font-size: 1em; } }
+  @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --primary: #0d7c66;
+    --primary-dark: #095e4d;
+    --primary-light: #e8f5f1;
+    --gold: #c8a84e;
+    --gold-light: #f5ecd3;
+    --dark: #1a1a2e;
+    --darker: #12121f;
+    --text: #2c3e50;
+    --text-light: #7f8c8d;
+    --white: #ffffff;
+    --bg: #f0f4f3;
+    --shadow: 0 10px 40px rgba(13,124,102,0.12);
+    --shadow-lg: 0 20px 60px rgba(13,124,102,0.18);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow: hidden;
+  }
+
+  .bg-pattern {
+    position: fixed; top:0; left:0; width:100%; height:100%;
+    background:
+      radial-gradient(circle at 20% 80%, rgba(13,124,102,0.06) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(200,168,78,0.06) 0%, transparent 50%),
+      radial-gradient(circle at 50% 50%, rgba(13,124,102,0.03) 0%, transparent 70%);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .geometric-pattern {
+    position: fixed; top:0; left:0; width:100%; height:100%;
+    opacity: 0.03; z-index:0; pointer-events:none;
+    background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%230d7c66' stroke-width='1'%3E%3Cpath d='M40 0L80 40L40 80L0 40Z'/%3E%3Cpath d='M40 10L70 40L40 70L10 40Z'/%3E%3Cpath d='M40 20L60 40L40 60L20 40Z'/%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  .app-container {
+    position: relative; z-index:1;
+    display: flex; flex-direction: column;
+    height: 100vh; max-width: 900px;
+    margin: 0 auto;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, #10a37f 100%);
+    padding: 18px 24px;
+    display: flex; align-items: center; gap: 16px;
+    box-shadow: 0 4px 20px rgba(13,124,102,0.3);
+    position: relative; overflow: hidden;
+  }
+
+  .header::before {
+    content: ''; position: absolute; top:-50%; right:-20%;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .header-icon {
+    width: 52px; height: 52px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+
+  .header-text h1 {
+    font-family: 'Amiri', serif;
+    color: var(--white); font-size: 1.35rem;
+    font-weight: 700; letter-spacing: 0.5px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+
+  .header-text p {
+    color: rgba(255,255,255,0.8); font-size: 0.72rem;
+    font-weight: 300; margin-top: 2px;
+  }
+
+  .header-badge {
+    margin-left: auto;
+    background: rgba(200,168,78,0.25);
+    color: var(--gold-light);
+    padding: 4px 12px; border-radius: 20px;
+    font-size: 0.65rem; font-weight: 500;
+    border: 1px solid rgba(200,168,78,0.3);
+    backdrop-filter: blur(10px);
+  }
+
+  /* CATEGORY TABS */
+  .category-bar {
+    background: var(--white);
+    padding: 10px 16px;
+    display: flex; gap: 6px;
+    overflow-x: auto;
+    border-bottom: 1px solid rgba(13,124,102,0.08);
+    scrollbar-width: none;
+  }
+  .category-bar::-webkit-scrollbar { display:none; }
+
+  .cat-btn {
+    padding: 6px 14px; border-radius: 20px;
+    border: 1.5px solid rgba(13,124,102,0.15);
+    background: var(--white);
+    color: var(--text-light);
+    font-size: 0.7rem; font-weight: 500;
+    cursor: pointer; white-space: nowrap;
+    transition: all 0.3s;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .cat-btn:hover, .cat-btn.active {
+    background: var(--primary);
+    color: var(--white);
+    border-color: var(--primary);
+    box-shadow: 0 3px 12px rgba(13,124,102,0.25);
+  }
+
+  /* CHAT AREA */
+  .chat-area {
+    flex: 1; overflow-y: auto;
+    padding: 20px 16px;
+    display: flex; flex-direction: column; gap: 16px;
+    scroll-behavior: smooth;
+  }
+
+  .chat-area::-webkit-scrollbar { width: 5px; }
+  .chat-area::-webkit-scrollbar-track { background: transparent; }
+  .chat-area::-webkit-scrollbar-thumb { background: rgba(13,124,102,0.2); border-radius: 10px; }
+
+  .message {
+    display: flex; gap: 10px;
+    animation: msgIn 0.4s cubic-bezier(0.16,1,0.3,1);
+    max-width: 88%;
+  }
+
+  @keyframes msgIn {
+    from { opacity:0; transform: translateY(16px) scale(0.97); }
+    to { opacity:1; transform: translateY(0) scale(1); }
+  }
+
+  .message.user { align-self: flex-end; flex-direction: row-reverse; }
+  .message.bot { align-self: flex-start; }
+
+  .msg-avatar {
+    width: 36px; height: 36px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+    margin-top: 4px;
+  }
+
+  .message.bot .msg-avatar {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    box-shadow: 0 4px 12px rgba(13,124,102,0.25);
+  }
+
+  .message.user .msg-avatar {
+    background: linear-gradient(135deg, var(--gold), #b8943e);
+    box-shadow: 0 4px 12px rgba(200,168,78,0.25);
+  }
+
+  .msg-bubble {
+    padding: 14px 18px;
+    border-radius: 18px;
+    font-size: 0.85rem;
+    line-height: 1.7;
+    position: relative;
+  }
+
+  .message.bot .msg-bubble {
+    background: var(--white);
+    color: var(--text);
+    border-bottom-left-radius: 6px;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(13,124,102,0.06);
+  }
+
+  .message.user .msg-bubble {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: var(--white);
+    border-bottom-right-radius: 6px;
+    box-shadow: 0 6px 20px rgba(13,124,102,0.25);
+  }
+
+  .msg-bubble .category-tag {
+    display: inline-block;
+    padding: 2px 10px; border-radius: 10px;
+    font-size: 0.62rem; font-weight: 600;
+    margin-bottom: 8px;
+    background: var(--primary-light);
+    color: var(--primary);
+  }
+
+  .msg-bubble h3 {
+    font-family: 'Amiri', serif;
+    color: var(--primary-dark);
+    font-size: 1rem; margin-bottom: 6px;
+  }
+
+  .msg-bubble .arabic {
+    font-family: 'Amiri', serif;
+    font-size: 1.2rem;
+    direction: rtl;
+    text-align: right;
+    color: var(--primary-dark);
+    background: var(--primary-light);
+    padding: 10px 16px;
+    border-radius: 10px;
+    margin: 8px 0;
+    line-height: 2;
+    border-right: 3px solid var(--gold);
+  }
+
+  .msg-bubble ul, .msg-bubble ol {
+    padding-left: 18px; margin: 6px 0;
+  }
+
+  .msg-bubble li { margin: 4px 0; }
+
+  .msg-bubble strong { color: var(--primary-dark); }
+
+  .msg-bubble .dalil {
+    background: var(--gold-light);
+    border-left: 3px solid var(--gold);
+    padding: 8px 12px;
+    border-radius: 0 8px 8px 0;
+    margin: 8px 0;
+    font-size: 0.82rem;
+  }
+
+  /* TYPING INDICATOR */
+  .typing {
+    display: flex; gap: 4px; padding: 8px 0;
+  }
+  .typing span {
+    width: 8px; height: 8px;
+    background: var(--primary);
+    border-radius: 50%;
+    animation: bounce 1.4s infinite;
+    opacity: 0.4;
+  }
+  .typing span:nth-child(2) { animation-delay: 0.2s; }
+  .typing span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce {
+    0%,60%,100% { transform: translateY(0); opacity:0.4; }
+    30% { transform: translateY(-8px); opacity:1; }
+  }
+
+  /* INPUT AREA */
+  .input-area {
+    background: var(--white);
+    padding: 14px 16px;
+    border-top: 1px solid rgba(13,124,102,0.08);
+    display: flex; gap: 10px; align-items: flex-end;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.04);
+  }
+
+  .input-wrapper {
+    flex: 1; position: relative;
+  }
+
+  .input-wrapper textarea {
+    width: 100%; padding: 12px 16px;
+    border: 2px solid rgba(13,124,102,0.12);
+    border-radius: 16px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.85rem;
+    resize: none; outline: none;
+    transition: all 0.3s;
+    max-height: 100px;
+    line-height: 1.5;
+    background: var(--bg);
+  }
+
+  .input-wrapper textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(13,124,102,0.08);
+    background: var(--white);
+  }
+
+  .send-btn {
+    width: 48px; height: 48px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    border: none; border-radius: 14px;
+    color: var(--white); font-size: 20px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(13,124,102,0.3);
+    flex-shrink: 0;
+  }
+
+  .send-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(13,124,102,0.4);
+  }
+
+  .send-btn:active { transform: scale(0.95); }
+
+  /* WELCOME */
+  .welcome-card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 28px 24px;
+    text-align: center;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(13,124,102,0.06);
+    margin: 10px 0;
+  }
+
+  .welcome-card .bismillah {
+    font-family: 'Amiri', serif;
+    font-size: 1.8rem;
+    color: var(--primary-dark);
+    margin-bottom: 12px;
+  }
+
+  .welcome-card h2 {
+    font-family: 'Amiri', serif;
+    color: var(--primary);
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+  }
+
+  .welcome-card p {
+    color: var(--text-light);
+    font-size: 0.78rem;
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
+  .quick-questions {
+    display: flex; flex-wrap: wrap;
+    gap: 6px; justify-content: center;
+  }
+
+  .quick-q {
+    padding: 6px 14px;
+    background: var(--primary-light);
+    color: var(--primary);
+    border: 1px solid rgba(13,124,102,0.12);
+    border-radius: 20px;
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .quick-q:hover {
+    background: var(--primary);
+    color: var(--white);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    .header { padding: 14px 16px; }
+    .header-text h1 { font-size: 1.1rem; }
+    .header-badge { display: none; }
+    .message { max-width: 95%; }
+    .msg-bubble { padding: 12px 14px; font-size: 0.82rem; }
+  }
 </style>
 </head>
 <body>
-<div class="header">
-<div class="header-title"><span>🤖</span> Tanyakan Al-Khlas AI</div>
-<button class="btn-icon danger" onclick="clearChat()">🗑️ Hapus Chat</button>
+
+<div class="bg-pattern"></div>
+<div class="geometric-pattern"></div>
+
+<div class="app-container">
+  <div class="header">
+    <div class="header-icon">🕌</div>
+    <div class="header-text">
+      <h1>AI Pengetahuan Islam & Umum</h1>
+      <p>Al-Quran • Hadits • Fiqih • Ushul Fiqih • Nahwu • Sharaf • Umum</p>
+    </div>
+    <div class="header-badge">✦ Offline AI</div>
+  </div>
+
+  <div class="category-bar">
+    <button class="cat-btn active" onclick="filterCat('semua')">📚 Semua</button>
+    <button class="cat-btn" onclick="filterCat('quran')">📖 Al-Quran</button>
+    <button class="cat-btn" onclick="filterCat('hadits')">📜 Hadits</button>
+    <button class="cat-btn" onclick="filterCat('fiqih')">⚖️ Fiqih</button>
+    <button class="cat-btn" onclick="filterCat('ushul')">📐 Ushul Fiqih</button>
+    <button class="cat-btn" onclick="filterCat('nahwu')">🔤 Nahwu</button>
+    <button class="cat-btn" onclick="filterCat('sharaf')">🔄 Sharaf</button>
+    <button class="cat-btn" onclick="filterCat('umum')">🌍 Umum</button>
+  </div>
+
+  <div class="chat-area" id="chatArea">
+    <div class="welcome-card">
+      <div class="bismillah">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</div>
+      <h2>Assalamu'alaikum Warahmatullahi Wabarakatuh</h2>
+      <p>Saya adalah AI Pengetahuan Islam & Umum. Tanyakan apa saja tentang Al-Quran, Hadits, Fiqih, Ushul Fiqih, Ilmu Nahwu, Sharaf, dan pengetahuan umum lainnya.</p>
+      <div class="quick-questions">
+        <button class="quick-q" onclick="askQuick(this)">Apa itu Al-Quran?</button>
+        <button class="quick-q" onclick="askQuick(this)">Rukun Islam</button>
+        <button class="quick-q" onclick="askQuick(this)">Rukun Iman</button>
+        <button class="quick-q" onclick="askQuick(this)">Apa itu Nahwu?</button>
+        <button class="quick-q" onclick="askQuick(this)">Apa itu Sharaf?</button>
+        <button class="quick-q" onclick="askQuick(this)">Syarat sah shalat</button>
+        <button class="quick-q" onclick="askQuick(this)">Pembagian hadits</button>
+        <button class="quick-q" onclick="askQuick(this)">Apa itu Ijma?</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="input-area">
+    <div class="input-wrapper">
+      <textarea id="userInput" rows="1" placeholder="Ketik pertanyaan Anda di sini..." onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+    </div>
+    <button class="send-btn" onclick="sendMessage()">➤</button>
+  </div>
 </div>
-<div class="chat-container" id="chatContainer"></div>
-<div class="input-area">
-<div class="input-wrapper">
-<textarea id="chatInput" rows="1" placeholder="Tanyakan apa saja (Quran, Hadits, Fiqih, Nahwu, dll)..." oninput="autoResize(this)" onkeypress="handleKeyPress(event)"></textarea>
-<button class="input-btn" onclick="startVoice()" title="Suara">🎤</button>
-</div>
-<button id="sendBtn" onclick="sendMessage()">Kirim</button>
-</div>
-<div class="status-bar">
-<div><span class="status-dot online" id="statusDot"></span><span id="statusText">Siap</span></div>
-<div id="apiStatus">Islamic Knowledge Engine: Active</div>
-</div>
+
 <script>
-// ============================================
-// 1. KONFIGURASI API
-// ============================================
-const API = {
-searxng: ['https://search.sapti.web.id/search', 'https://searx.be/search', 'https://search.ononoki.org/search'],
-aiPost: 'https://text.pollinations.ai/openai',
-quran: {
-byNumber: (n) => `https://api.alquran.cloud/v1/surah/${n}/editions/quran-uthmani,id.indonesian`,
-byName: (name) => `https://api.alquran.cloud/v1/surah/${encodeURIComponent(name)}/editions/quran-uthmani,id.indonesian`,
-search: (q) => `https://api.alquran.cloud/v1/search/${encodeURIComponent(q)}/all/id.indonesian`,
-surahList: 'https://api.alquran.cloud/v1/surah',
-ayah: (surah, number) => `https://api.alquran.cloud/v1/ayah/${surah}:${number}/editions/quran-uthmani,id.indonesian`
+// =============================================
+// MASSIVE KNOWLEDGE BASE (NO DATABASE)
+// =============================================
+const KB = [
+
+// ==================== AL-QURAN ====================
+{
+  cat: "quran",
+  keys: ["al-quran","al quran","quran","qur'an","apa itu al-quran","apa itu quran","pengertian quran","definisi quran"],
+  ans: `<h3>📖 Pengertian Al-Quran</h3>
+<p><strong>Al-Quran</strong> secara bahasa berasal dari kata <em>qara'a - yaqra'u - qur'anan</em> yang berarti <strong>"bacaan"</strong>.</p>
+<p>Secara istilah, Al-Quran adalah <strong>kalam Allah SWT</strong> yang diturunkan kepada Nabi Muhammad ﷺ melalui perantaraan Malaikat Jibril AS, berbahasa Arab, diriwayatkan secara <em>mutawatir</em>, dan membacanya bernilai ibadah.</p>
+<div class="dalil">📌 Al-Quran terdiri dari <strong>30 juz, 114 surat, 6.236 ayat, 77.439 kata, dan 323.015 huruf</strong> (menurut hitungan jumhur).</div>
+<ul>
+<li><strong>Surat terpanjang:</strong> Al-Baqarah (286 ayat)</li>
+<li><strong>Surat terpendek:</strong> Al-Kautsar (3 ayat)</li>
+<li><strong>Surat Makkiyah:</strong> 86 surat (diturunkan di Makkah)</li>
+<li><strong>Surat Madaniyah:</strong> 28 surat (diturunkan di Madinah)</li>
+</ul>
+<p>Al-Quran diturunkan selama kurang lebih <strong>22 tahun 2 bulan 22 hari</strong>.</p>`
 },
-hadith: {
-bukhari: (n) => `https://api.hadith.gading.dev/books/bukhari/${n}`,
-muslim: (n) => `https://api.hadith.gading.dev/books/muslim/${n}`,
-abuDaud: (n) => `https://api.hadith.gading.dev/books/abudaud/${n}`,
-tirmidzi: (n) => `https://api.hadith.gading.dev/books/tirmidzi/${n}`,
-nasai: (n) => `https://api.hadith.gading.dev/books/nasai/${n}`,
-ibnuMajah: (n) => `https://api.hadith.gading.dev/books/ibnumajah/${n}`,
-books: 'https://api.hadith.gading.dev/books'
+{
+  cat: "quran",
+  keys: ["surat al-fatihah","al-fatihah","fatihah","ummul kitab","ummul quran"],
+  ans: `<h3>📖 Surat Al-Fatihah</h3>
+<p><strong>Al-Fatihah</strong> artinya "Pembukaan". Disebut juga <em>Ummul Kitab</em> (Induk Al-Kitab), <em>Ummul Quran</em>, <em>As-Sab'ul Matsani</em> (Tujuh ayat yang diulang-ulang), dan <em>Asy-Syifa</em> (Penyembuh).</p>
+<div class="arabic">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ ۝ الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ ۝ الرَّحْمَنِ الرَّحِيمِ ۝ مَالِكِ يَوْمِ الدِّينِ ۝ إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ ۝ اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ ۝ صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ</div>
+<p>Al-Fatihah terdiri dari <strong>7 ayat</strong>, termasuk surat <strong>Makkiyah</strong>. Membaca Al-Fatihah merupakan <strong>rukun shalat</strong> yang wajib dibaca di setiap rakaat.</p>
+<div class="dalil">📌 Rasulullah ﷺ bersabda: "Tidak sah shalat bagi orang yang tidak membaca Fatihatul Kitab." (HR. Bukhari & Muslim)</div>`
 },
-corsProxy: (u) => `https://corsproxy.io/?${encodeURIComponent(u)}`
-};
+{
+  cat: "quran",
+  keys: ["ayat kursi","ayat kursy","kursi"],
+  ans: `<h3>📖 Ayat Kursi</h3>
+<p><strong>Ayat Kursi</strong> adalah ayat ke-255 dari Surat <strong>Al-Baqarah</strong>. Dinamakan Ayat Kursi karena di dalamnya terdapat kata <em>Kursi</em> yang bermakna kekuasaan dan ilmu Allah.</p>
+<div class="arabic">اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَن ذَا الَّذِي يَشْفَعُ عِندَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ</div>
+<div class="dalil">📌 Rasulullah ﷺ bersabda: "Ayat Kursi adalah ayat yang paling agung dalam Al-Quran." (HR. An-Nasa'i, dishahihkan Al-Albani)</div>
+<p><strong>Keutamaan:</strong> Siapa yang membacanya setelah setiap shalat wajib, tidak ada yang menghalanginya masuk surga kecuali kematian. (HR. An-Nasa'i)</p>`
+},
+{
+  cat: "quran",
+  keys: ["nuzulul quran","turunnya quran","lailatul qadar","malam lailatul","kapan quran turun","malam kemuliaan"],
+  ans: `<h3>📖 Nuzulul Quran & Lailatul Qadar</h3>
+<p><strong>Nuzulul Quran</strong> adalah peristiwa turunnya Al-Quran pertama kali kepada Nabi Muhammad ﷺ di <strong>Gua Hira</strong> pada tanggal <strong>17 Ramadhan</strong> tahun ke-41 dari kelahiran beliau ﷺ.</p>
+<p>Ayat pertama yang turun adalah <strong>Surat Al-'Alaq ayat 1-5</strong>:</p>
+<div class="arabic">اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ ۝ خَلَقَ الْإِنسَانَ مِنْ عَلَقٍ ۝ اقْرَأْ وَرَبُّكَ الْأَكْرَمُ ۝ الَّذِي عَلَّمَ بِالْقَلَمِ ۝ عَلَّمَ الْإِنسَانَ مَا لَمْ يَعْلَمْ</div>
+<p><strong>Lailatul Qadar</strong> (Malam Kemuliaan) adalah malam diturunkannya Al-Quran secara keseluruhan dari Lauhul Mahfuzh ke langit dunia (Baitul 'Izzah).</p>
+<div class="dalil">📌 "Sesungguhnya Kami telah menurunkannya (Al-Quran) pada malam kemuliaan. Dan tahukah kamu apakah malam kemuliaan itu? Malam kemuliaan itu lebih baik dari seribu bulan." (QS. Al-Qadr: 1-3)</div>`
+},
+{
+  cat: "quran",
+  keys: ["juz quran","jumlah juz","30 juz","pembagian juz"],
+  ans: `<h3>📖 Pembagian Juz Al-Quran</h3>
+<p>Al-Quran terbagi menjadi <strong>30 juz</strong> yang sama panjangnya untuk memudahkan pembacaan selama sebulan (khatam).</p>
+<ul>
+<li><strong>Juz 1:</strong> Al-Fatihah – Al-Baqarah: 141</li>
+<li><strong>Juz 2:</strong> Al-Baqarah: 142–252</li>
+<li><strong>Juz 3:</strong> Al-Baqarah: 253 – Ali Imran: 92</li>
+<li><strong>Juz 10:</strong> Al-Anfal: 41 – At-Taubah: 92</li>
+<li><strong>Juz 15:</strong> Al-Isra': 1 – Al-Kahf: 74</li>
+<li><strong>Juz 20:</strong> An-Naml: 56 – Al-Ankabut: 45</li>
+<li><strong>Juz 25:</strong> Fushshilat: 47 – Al-Jatsiyah: 37</li>
+<li><strong>Juz 28:</strong> Al-Mujadilah – At-Tahrim</li>
+<li><strong>Juz 29:</strong> Al-Mulk – Al-Mursalat</li>
+<li><strong>Juz 30 (Juz 'Amma):</strong> An-Naba' – An-Nas</li>
+</ul>
+<p>Juz 30 disebut <strong>Juz 'Amma</strong> karena dimulai dengan surat An-Naba' yang diawali kata "'Amma".</p>`
+},
+{
+  cat: "quran",
+  keys: ["asbabun nuzul","sebab turun","asbab nuzul","sebab turunnya ayat"],
+  ans: `<h3>📖 Asbabun Nuzul</h3>
+<p><strong>Asbabun Nuzul</strong> adalah ilmu yang mempelajari <strong>sebab-sebab turunnya ayat Al-Quran</strong>, baik berupa peristiwa, pertanyaan, maupun situasi tertentu yang melatarbelakangi turunnya wahyu.</p>
+<p><strong>Manfaat mempelajari Asbabun Nuzul:</strong></p>
+<ol>
+<li>Memahami makna ayat secara tepat dan kontekstual</li>
+<li>Mengetahui hikmah di balik penetapan hukum</li>
+<li>Membantu menafsirkan ayat yang masih umum</li>
+<li>Mengetahui kekhususan (takhsis) suatu hukum</li>
+<li>Menghindari kesalahpahaman dalam memahami ayat</li>
+</ol>
+<div class="dalil">📌 Contoh: Surat Al-Lahab turun karena Abu Lahab menentang dakwah Nabi ﷺ di Bukit Shafa. Surat 'Abasa turun karena Nabi ﷺ berpaling dari Ibnu Ummi Maktum yang buta.</div>
+<p>Tidak semua ayat memiliki Asbabun Nuzul. Banyak ayat turun secara <em>ibtida'i</em> (tanpa sebab khusus).</p>`
+},
+{
+  cat: "quran",
+  keys: ["tafsir","ilmu tafsir","macam tafsir","jenis tafsir","metode tafsir"],
+  ans: `<h3>📖 Ilmu Tafsir Al-Quran</h3>
+<p><strong>Tafsir</strong> secara bahasa berarti <em>menjelaskan dan menyingkap</em>. Secara istilah adalah ilmu yang membahas tentang memahami dan menjelaskan makna-makna Al-Quran sesuai kemampuan manusia.</p>
+<p><strong>Pembagian Tafsir berdasarkan sumber:</strong></p>
+<ol>
+<li><strong>Tafsir bil Ma'tsur:</strong> Tafsir Al-Quran dengan Al-Quran, Hadits, atau perkataan Sahabat & Tabi'in. Contoh: Tafsir Ibnu Katsir, Tafsir Ath-Thabari.</li>
+<li><strong>Tafsir bir Ra'yi:</strong> Tafsir berdasarkan ijtihad dan pemikiran ulama dengan syarat-syarat ketat. Contoh: Tafsir Al-Kasysyaf, Tafsir Al-Baidhawi.</li>
+<li><strong>Tafsir Isyari:</strong> Tafsir berdasarkan isyarat-isyarat batin yang dipahami oleh para ahli tasawuf.</li>
+</ol>
+<p><strong>Metode Tafsir:</strong></p>
+<ul>
+<li><strong>Tahlili:</strong> Berurutan sesuai mushaf (analitis)</li>
+<li><strong>Ijmali:</strong> Global/ringkas</li>
+<li><strong>Muqarin:</strong> Perbandingan antar mufassir</li>
+<li><strong>Maudhu'i:</strong> Tematik per topik</li>
+</ul>`
+},
+{
+  cat: "quran",
+  keys: ["tajwid","ilmu tajwid","hukum tajwid","nun mati","tanwin","mim mati","mad"],
+  ans: `<h3>📖 Ilmu Tajwid</h3>
+<p><strong>Tajwid</strong> secara bahasa berarti <em>memperbagus</em>. Secara istilah adalah mengeluarkan setiap huruf dari makhrajnya dengan memberikan hak dan mustahaknya.</p>
+<p><strong>Hukum-hukum Tajwid utama:</strong></p>
+<p><strong>1. Hukum Nun Mati & Tanwin:</strong></p>
+<ul>
+<li><strong>Izhar Halqi:</strong> Jelas (ء, هـ, ع, ح, غ, خ)</li>
+<li><strong>Idgham Bighunnah:</strong> Melebur dengan dengung (ي, ن, م, و)</li>
+<li><strong>Idgham Bilaghunnah:</strong> Melebur tanpa dengung (ل, ر)</li>
+<li><strong>Iqlab:</strong> Mengganti nun mati menjadi mim (ب)</li>
+<li><strong>Ikhfa Haqiqi:</strong> Samar (15 huruf sisa)</li>
+</ul>
+<p><strong>2. Hukum Mim Mati:</strong></p>
+<ul>
+<li><strong>Ikhfa Syafawi:</strong> Samar (ب)</li>
+<li><strong>Idgham Mimi/Mitslain:</strong> Melebur (م)</li>
+<li><strong>Izhar Syafawi:</strong> Jelas (selain ب dan م)</li>
+</ul>
+<p><strong>3. Hukum Mad:</strong> Mad Thabi'i (2 harakat), Mad Wajib Muttashil (4-5), Mad Jaiz Munfashil (2-5), Mad Aridh Lissukun (2-4-6), Mad Lazim (6).</p>`
+},
+{
+  cat: "quran",
+  keys: ["makhraj","makharijul huruf","makhraj huruf","tempat keluar huruf"],
+  ans: `<h3>📖 Makharijul Huruf</h3>
+<p><strong>Makharijul Huruf</strong> adalah tempat-tempat keluarnya huruf hijaiyah. Terdapat <strong>5 makhraj utama</strong>:</p>
+<ol>
+<li><strong>Al-Jauf (Rongga Mulut/Tenggorokan):</strong> Huruf mad: ا, و, ي</li>
+<li><strong>Al-Halq (Tenggorokan):</strong>
+  <ul>
+    <li>Aqshal Halq (pangkal): ء, هـ</li>
+    <li>Wasthul Halq (tengah): ع, ح</li>
+    <li>Adnal Halq (ujung): غ, خ</li>
+  </ul>
+</li>
+<li><strong>Al-Lisan (Lidah):</strong> 18 huruf termasuk ق, ك, ج, ش, ي, ض, ل, ن, ر, ط, د, ت, ص, ز, س, ظ, ذ, ث</li>
+<li><strong>Asy-Syafatain (Dua Bibir):</strong> ف, و, ب, م</li>
+<li><strong>Al-Khaisyum (Pangkal Hidung):</strong> Tempat keluarnya ghunnah (dengung)</li>
+</ol>`
+},
+{
+  cat: "quran",
+  keys: ["waqaf","waqaf ibtida","tanda waqaf","berhenti bacaan"],
+  ans: `<h3>📖 Waqaf dan Ibtida</h3>
+<p><strong>Waqaf</strong> artinya <em>berhenti</em> sejenak saat membaca Al-Quran untuk mengambil napas dengan niat melanjutkan bacaan.</p>
+<p><strong>Jenis-jenis Waqaf:</strong></p>
+<ul>
+<li><strong>Waqaf Lazim (مـ):</strong> Wajib berhenti. Jika diteruskan bisa merusak makna.</li>
+<li><strong>Waqaf Jaiz (ج):</strong> Boleh berhenti atau lanjut, keduanya baik.</li>
+<li><strong>Waqaf Kafi (ك):</strong> Cukup berhenti, lebih baik daripada washal.</li>
+<li><strong>Waqaf Hasan (ح):</strong> Baik berhenti, tapi lebih baik lanjut.</li>
+<li><strong>Waqaf Qabih:</strong> Buruk/tidak boleh berhenti karena merusak makna.</li>
+</ul>
+<p><strong>Tanda-tanda Waqaf dalam Mushaf:</strong></p>
+<ul>
+<li>مـ (Waqaf Lazim) • ط (Waqaf Mutlaq) • ج (Jaiz) • ز (Boleh lanjut) • ص (Washal lebih utama) • ق (Qila 'alaihi waqf) • لا (Jangan berhenti) • ∴∴ (Waqaf Mu'anaqah)</li>
+</ul>`
+},
 
-// ============================================
-// 2. SYSTEM PROMPT KHUSUS ISLAM (SANGAT KAYA & TEGAS)
-// ============================================
-const ISLAMIC_SYSTEM_PROMPT = `Kamu adalah "Al-Khlas AI" — asisten AI ULTRA CERDAS dan AHLI KOMPREHENSIF dalam Khazanah Islam. 
-## BIDANG KEAHLIAN: Al-Quran (Tafsir, Asbabun Nuzul), Hadits (Kutubus Sittah, Sanad, Matan, Derajat), Fiqih (4 Mazhab, Ushul, Qawaid), Aqidah, Akhlak, Tasawuf, Nahwu, Sharaf, Balaghah, Sirah, dan Ulumul Quran.
-## ATURAN MUTLAK:
-1. TEKS ARAB: SELALU tulis teks Arab dengan HARAKAT lengkap dan akurat.
-2. TRANSLITERASI & TERJEMAHAN: Sertakan bacaan latin dan terjemahan Bahasa Indonesia yang baik.
-3. SUMBER: SELALU cantumkan sumber spesifik (QS. Surah:Ayat, HR. Bukhari no.X, Kitab nama hal.X).
-4. JANGAN PERNAH mengarang ayat/hadits. Jika tidak yakin, katakan "Perlu verifikasi lebih lanjut" tapi tetap berikan penjelasan ilmiah berdasarkan kaidah yang ada.
-5. JANGAN PERNAH memberikan link pencarian Google, Wikipedia, atau menyuruh pengguna mencari sendiri. Kamu HARUS menjawab langsung dengan pengetahuanmu secara lengkap, mendalam, dan terstruktur.
-6. METODE: Jelaskan dengan sistematis (Definisi → Dalil → Penjelasan Ulama → Kesimpulan).`;
+// ==================== HADITS ====================
+{
+  cat: "hadits",
+  keys: ["hadits","hadis","hadith","apa itu hadits","pengertian hadits","definisi hadits"],
+  ans: `<h3>📜 Pengertian Hadits</h3>
+<p><strong>Hadits</strong> secara bahasa berarti <em>baru, dekat, atau kabar/berita</em>.</p>
+<p>Secara istilah, Hadits adalah segala sesuatu yang disandarkan kepada Nabi Muhammad ﷺ berupa <strong>perkataan (qaul), perbuatan (fi'l), ketetapan (taqrir), dan sifat (shifat)</strong>, baik sifat fisik maupun akhlak.</p>
+<p><strong>Unsur-unsur Hadits:</strong></p>
+<ul>
+<li><strong>Sanad:</strong> Rantai periwayat yang menyampaikan hadits</li>
+<li><strong>Matan:</strong> Isi/teks hadits itu sendiri</li>
+<li><strong>Rawi:</strong> Orang yang meriwayatkan/mencatat hadits</li>
+</ul>
+<p><strong>Sinonim Hadits:</strong></p>
+<ul>
+<li><strong>Sunnah:</strong> Lebih umum, mencakup sebelum dan sesudah kenabian</li>
+<li><strong>Khabar:</strong> Lebih umum, mencakup yang dari Nabi dan selain Nabi</li>
+<li><strong>Atsar:</strong> Sering digunakan untuk perkataan Sahabat dan Tabi'in</li>
+</ul>`
+},
+{
+  cat: "hadits",
+  keys: ["pembagian hadits","macam hadits","jenis hadits","klasifikasi hadits","kategori hadits"],
+  ans: `<h3>📜 Pembagian Hadits</h3>
+<p><strong>A. Berdasarkan Kuantitas (Jumlah Perawi):</strong></p>
+<ol>
+<li><strong>Hadits Mutawatir:</strong> Diriwayatkan oleh banyak perawi di setiap thabaqat yang mustahil bersepakat dusta. Memberikan ilmu <em>qath'i</em> (pasti).</li>
+<li><strong>Hadits Ahad:</strong> Tidak mencapai derajat mutawatir. Terbagi:
+  <ul>
+    <li><em>Masyhur:</em> Diriwayatkan 3 perawi atau lebih</li>
+    <li><em>Aziz:</em> Diriwayatkan minimal 2 perawi</li>
+    <li><em>Gharib:</em> Diriwayatkan 1 perawi saja</li>
+  </ul>
+</li>
+</ol>
+<p><strong>B. Berdasarkan Kualitas:</strong></p>
+<ol>
+<li><strong>Hadits Shahih:</strong> Sanad bersambung, perawi adil & dhabith, tanpa syadz & 'illat</li>
+<li><strong>Hadits Hasan:</strong> Seperti shahih tapi kedhabithan perawi sedikit kurang</li>
+<li><strong>Hadits Dhaif:</strong> Tidak memenuhi syarat shahih/hasan (sanad terputus, perawi cacat, dll)</li>
+<li><strong>Hadits Maudhu':</strong> Hadits palsu/buatan</li>
+</ol>`
+},
+{
+  cat: "hadits",
+  keys: ["shahih","hadits shahih","syarat shahih","kriteria shahih"],
+  ans: `<h3>📜 Hadits Shahih</h3>
+<p><strong>Hadits Shahih</strong> adalah hadits yang memenuhi <strong>5 syarat</strong>:</p>
+<ol>
+<li><strong>Ittishalus Sanad:</strong> Sanadnya bersambung dari awal hingga akhir, setiap perawi mendengar langsung dari gurunya</li>
+<li><strong>Adalah ar-Rawi:</strong> Setiap perawi bersifat <em>adil</em> (Muslim, baligh, berakal, tidak fasik, menjaga muruah)</li>
+<li><strong>Tamam adh-Dhabth:</strong> Setiap perawi memiliki <em>dhabth</em> (hafalan kuat) sempurna</li>
+<li><strong>Ghairu Syadz:</strong> Tidak bertentangan dengan riwayat yang lebih kuat (tidak syadz)</li>
+<li><strong>Ghairu Mu'allal:</strong> Tidak mengandung cacat tersembunyi ('illat)</li>
+</ol>
+<div class="dalil">📌 Kitab hadits shahih paling utama: <strong>Shahih Al-Bukhari</strong> dan <strong>Shahih Muslim</strong> (Ash-Shahihain).</div>
+<p>Hadits Shahih terbagi menjadi <strong>Shahih Lidzatihi</strong> (shahih dengan sendirinya) dan <strong>Shahih Lighairihi</strong> (naik derajat dari hasan karena adanya penguat).</p>`
+},
+{
+  cat: "hadits",
+  keys: ["dhaif","hadits dhaif","lemah","hadits lemah"],
+  ans: `<h3>📜 Hadits Dhaif (Lemah)</h3>
+<p><strong>Hadits Dhaif</strong> adalah hadits yang <strong>tidak memenuhi satu atau lebih syarat</strong> hadits shahih atau hasan.</p>
+<p><strong>Sebab-sebab kedhaifan:</strong></p>
+<ol>
+<li><strong>Sanad Terputus (Inqitha'):</strong>
+  <ul>
+    <li><em>Mu'allaq:</em> Gugur perawi di awal sanad</li>
+    <li><em>Mursal:</em> Gugur perawi di akhir sanad (Sahabat)</li>
+    <li><em>Mu'dhal:</em> Gugur 2 perawi berturut-turut</li>
+    <li><em>Munqathi':</em> Terputus di tengah sanad</li>
+  </ul>
+</li>
+<li><strong>Cacat pada Perawi:</strong>
+  <ul>
+    <li><em>Maudhu':</em> Perawi pendusta (hadits palsu)</li>
+    <li><em>Matruk:</em> Perawi tertuduh dusta</li>
+    <li><em>Munkar:</em> Perawi banyak salah/lalai</li>
+    <li><em>Mu'allal:</em> Ada cacat tersembunyi</li>
+    <li><em>Mudraj:</em> Ada sisipan dalam matan/sanad</li>
+    <li><em>Maqlub:</em> Terbalik nama/perawi</li>
+  </ul>
+</li>
+</ol>
+<p><strong>Hukum mengamalkan hadits dhaif:</strong> Jumhur ulama membolehkan untuk <em>fadhail amal</em> (keutamaan amal) dengan syarat tidak terlalu lemah, tidak bertentangan dengan dalil shahih, dan tidak diyakini berasal dari Nabi ﷺ.</p>`
+},
+{
+  cat: "hadits",
+  keys: ["kutubus sittah","kitab hadits","buku hadits","enam kitab","sittah"],
+  ans: `<h3>📜 Kutubus Sittah (Enam Kitab Hadits Utama)</h3>
+<p><strong>Kutubus Sittah</strong> adalah enam kitab induk hadits yang paling masyhur dalam Islam:</p>
+<ol>
+<li><strong>Shahih Al-Bukhari</strong> (194-256 H) – Imam Muhammad bin Ismail Al-Bukhari. Memuat ±7.275 hadits (dengan pengulangan). Kitab paling shahih setelah Al-Quran.</li>
+<li><strong>Shahih Muslim</strong> (204-261 H) – Imam Muslim bin Al-Hajjaj An-Naisaburi. Memuat ±7.190 hadits.</li>
+<li><strong>Sunan Abu Dawud</strong> (202-275 H) – Imam Abu Dawud Sulaiman bin Al-Asy'ats. Memuat ±4.800 hadits. Fokus pada hadits hukum.</li>
+<li><strong>Sunan At-Tirmidzi</strong> (209-279 H) – Imam Abu Isa Muhammad At-Tirmidzi. Memuat ±3.956 hadits. Menyebutkan derajat hadits.</li>
+<li><strong>Sunan An-Nasa'i</strong> (215-303 H) – Imam Ahmad bin Syu'aib An-Nasa'i. Memuat ±5.758 hadits. Ketat dalam menyeleksi perawi.</li>
+<li><strong>Sunan Ibnu Majah</strong> (209-273 H) – Imam Muhammad bin Yazid Ibnu Majah. Memuat ±4.341 hadits.</li>
+</ol>
+<div class="dalil">📌 Ada juga kitab-kitab penting lainnya: Muwaththa' Imam Malik, Musnad Ahmad, Sunan Ad-Darimi, Shahih Ibnu Khuzaimah, Shahih Ibnu Hibban.</div>`
+},
+{
+  cat: "hadits",
+  keys: ["sanad","matan","rawi","perawi","isnad"],
+  ans: `<h3>📜 Unsur-Unsur Hadits</h3>
+<p><strong>1. Sanad (السند):</strong></p>
+<p>Secara bahasa berarti <em>sandaran</em>. Secara istilah adalah <strong>rantai para perawi</strong> yang menyampaikan matan hadits dari sumber pertamanya. Contoh: "Telah menceritakan kepada kami Ahmad, dari Malik, dari Nafi', dari Ibnu Umar..."</p>
+<p><strong>2. Matan (المتن):</strong></p>
+<p>Secara bahasa berarti <em>tanah yang keras dan tinggi</em>. Secara istilah adalah <strong>isi/teks hadits</strong> yang menjadi ujung sanad. Yaitu perkataan, perbuatan, atau ketetapan Nabi ﷺ yang diriwayatkan.</p>
+<p><strong>3. Rawi/Muhaddits (الراوي):</strong></p>
+<p>Orang yang <strong>meriwayatkan dan membukukan</strong> hadits. Contoh: Imam Bukhari, Imam Muslim, dll.</p>
+<p><strong>Ilmu-ilmu terkait:</strong></p>
+<ul>
+<li><strong>Ilmu Rijalil Hadits:</strong> Mempelajari biografi para perawi</li>
+<li><strong>Ilmu Jarh wat Ta'dil:</strong> Menilai cacat dan keadilan perawi</li>
+<li><strong>Ilmu 'Ilalil Hadits:</strong> Mempelajari cacat tersembunyi dalam hadits</li>
+</ul>`
+},
+{
+  cat: "hadits",
+  keys: ["hadits qudsi","qudsi","hadis qudsi"],
+  ans: `<h3>📜 Hadits Qudsi</h3>
+<p><strong>Hadits Qudsi</strong> adalah hadits yang <strong>maknanya dari Allah SWT</strong> tetapi <strong>lafadznya dari Nabi Muhammad ﷺ</strong>. Biasanya diawali dengan ungkapan: <em>"Allah Ta'ala berfirman..."</em> atau <em>"Rasulullah ﷺ bersabda, yang diriwayatkan dari Rabbnya..."</em></p>
+<p><strong>Perbedaan Hadits Qudsi dengan Al-Quran:</strong></p>
+<ul>
+<li>Al-Quran: Lafadz dan makna dari Allah. Hadits Qudsi: Makna dari Allah, lafadz dari Nabi ﷺ</li>
+<li>Al-Quran: Membacanya bernilai ibadah khusus (pahala per huruf). Hadits Qudsi: Tidak demikian</li>
+<li>Al-Quran: Diriwayatkan secara mutawatir. Hadits Qudsi: Bisa ahad</li>
+<li>Al-Quran: Boleh dibaca dalam shalat. Hadits Qudsi: Tidak</li>
+<li>Al-Quran: Mukjizat dan tidak boleh diterjemahkan sebagai pengganti. Hadits Qudsi: Boleh</li>
+</ul>
+<div class="dalil">📌 Contoh Hadits Qudsi: "Wahai hamba-hamba-Ku, sesungguhnya Aku telah mengharamkan kezhaliman atas diri-Ku dan Aku menjadikannya haram di antara kalian, maka janganlah kalian saling menzhalimi." (HR. Muslim)</div>`
+},
 
-// ============================================
-// 3. BASIS DATA AGAMA & TOKOH (DIPERTAHANKAN)
-// ============================================
-const RELIGIOUS_DB = {
-'sholawat nariyah': { religion: 'Islam', name: 'Sholawat Nariyah', text: 'اَللّٰهُمَّ صَلِّ صَلَاةً كَامِلَةً وَسَلِّمْ سَلَامًا تَامًّا عَلَى سَيِّدِنَا مُحَمَّدٍ...', latin: 'Allaahumma sholli sholaatan kaamilatan wa sallim salaaman taamman \'alaa sayyidinaa Muhammadin...', translation: 'Ya Allah, limpahkanlah shalawat yang sempurna dan salam yang sempurna kepada junjungan kami Nabi Muhammad...', source: 'Dianjurkan dibaca 11x setelah Subuh' },
-'doa nabi adam': { religion: 'Islam', name: 'Doa Nabi Adam AS', text: 'رَبَّنَا ظَلَمْنَا اَنْفُسَنَا وَاِنْ لَمْ تَغْفِرْ لَنَا وَتَرْحَمْنَا لَنَكُوْنَنَّ مِنَ الْخَاسِرِيْنَ', latin: 'Rabbanaa zholamnaa anfusanaa wa il lam taghfir lanaa wa tarhamnaa lanakuunanna minal-khaasiriin.', translation: 'Ya Tuhan kami, kami telah menganiaya diri kami sendiri...', source: 'QS. Al-A\'raf: 23' },
-'al-fatihah': { religion: 'Islam', name: 'QS. Al-Fatihah', text: 'بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ ۝ اَلْحَمْدُ لِلّٰهِ رَبِّ الْعٰلَمِيْنَ...', latin: 'Bismillaahir-rahmaanir-rahiim. Alhamdu lillaahi rabbil-\'aalamiin...', translation: 'Dengan nama Allah Yang Maha Pengasih, Maha Penyayang...', source: 'QS. Al-Fatihah: 1-7' }
-};
-const FIGURE_DB = {
-'kh zainuddin mz': { name: 'KH. Zainuddin MZ', birth: '1951', death: '5 Juli 2011', role: 'Ulama & Dai kondang', note: 'Wafat di Jakarta' },
-'hamka': { name: 'Prof. Dr. Hamka', birth: '17 Februari 1908', death: '24 Juli 1981', role: 'Ulama, Sastrawan, Politisi', note: 'Mantan Ketua MUI' }
-};
+// ==================== FIQIH ====================
+{
+  cat: "fiqih",
+  keys: ["fiqih","fikih","fiqh","apa itu fiqih","pengertian fiqih","definisi fiqih"],
+  ans: `<h3>⚖️ Pengertian Fiqih</h3>
+<p><strong>Fiqih</strong> secara bahasa berarti <em>al-fahm</em> (pemahaman yang mendalam).</p>
+<p>Secara istilah, Fiqih adalah <strong>ilmu tentang hukum-hukum syariat yang bersifat amaliyah (praktis)</strong> yang digali dari dalil-dalil yang terperinci (tafshili).</p>
+<p><strong>Objek kajian Fiqih:</strong> Perbuatan mukallaf (orang yang sudah baligh dan berakal).</p>
+<p><strong>Hukum Taklifi (5 hukum):</strong></p>
+<ol>
+<li><strong>Wajib:</strong> Dikerjakan mendapat pahala, ditinggalkan berdosa</li>
+<li><strong>Sunnah/Mandub:</strong> Dikerjakan mendapat pahala, ditinggalkan tidak berdosa</li>
+<li><strong>Mubah/Jaiz:</strong> Boleh dikerjakan atau ditinggalkan, tidak ada pahala/dosa</li>
+<li><strong>Makruh:</strong> Ditinggalkan mendapat pahala, dikerjakan tidak berdosa (tapi tercela)</li>
+<li><strong>Haram:</strong> Ditinggalkan mendapat pahala, dikerjakan berdosa</li>
+</ol>
+<p><strong>4 Mazhab Fiqih Utama:</strong> Hanafi, Maliki, Syafi'i, Hanbali.</p>`
+},
+{
+  cat: "fiqih",
+  keys: ["rukun islam","5 rukun islam","lima rukun islam","pilar islam"],
+  ans: `<h3>⚖️ Rukun Islam</h3>
+<p>Rukun Islam terdiri dari <strong>5 perkara</strong>:</p>
+<ol>
+<li><strong>Syahadatain (Dua Kalimat Syahadat):</strong>
+  <div class="arabic">أَشْهَدُ أَنْ لَا إِلَٰهَ إِلَّا اللَّهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا رَسُولُ اللَّهِ</div>
+  "Aku bersaksi bahwa tidak ada Tuhan selain Allah dan aku bersaksi bahwa Muhammad adalah utusan Allah."</li>
+<li><strong>Mendirikan Shalat:</strong> 5 waktu sehari semalam (Subuh, Dzuhur, Ashar, Maghrib, Isya)</li>
+<li><strong>Menunaikan Zakat:</strong> Mengeluarkan sebagian harta untuk yang berhak</li>
+<li><strong>Berpuasa Ramadhan:</strong> Menahan diri dari hal yang membatalkan dari terbit fajar hingga terbenam matahari</li>
+<li><strong>Menunaikan Haji:</strong> Ke Baitullah bagi yang mampu</li>
+</ol>
+<div class="dalil">📌 "Islam dibangun di atas lima perkara..." (HR. Bukhari & Muslim dari Ibnu Umar RA)</div>`
+},
+{
+  cat: "fiqih",
+  keys: ["rukun iman","6 rukun iman","enam rukun iman","pilar iman"],
+  ans: `<h3>⚖️ Rukun Iman</h3>
+<p>Rukun Iman terdiri dari <strong>6 perkara</strong>:</p>
+<ol>
+<li><strong>Iman kepada Allah SWT:</strong> Meyakini wujud, keesaan, dan sifat-sifat kesempurnaan-Nya</li>
+<li><strong>Iman kepada Malaikat:</strong> Meyakini keberadaan malaikat sebagai makhluk dari cahaya. Malaikat yang wajib diketahui: Jibril, Mikail, Israfil, Izrail, Munkar, Nakir, Raqib, Atid, Malik, Ridwan</li>
+<li><strong>Iman kepada Kitab-kitab Allah:</strong> Taurat (Musa), Zabur (Daud), Injil (Isa), Al-Quran (Muhammad ﷺ)</li>
+<li><strong>Iman kepada Rasul-rasul Allah:</strong> 25 nabi yang wajib diketahui, dari Adam AS hingga Muhammad ﷺ</li>
+<li><strong>Iman kepada Hari Akhir:</strong> Kiamat, kebangkitan, hisab, surga, dan neraka</li>
+<li><strong>Iman kepada Qadha dan Qadar:</strong> Takdir baik dan buruk dari Allah SWT</li>
+</ol>
+<div class="dalil">📌 Berdasarkan Hadits Jibril (HR. Muslim): "Iman adalah engkau beriman kepada Allah, malaikat-malaikat-Nya, kitab-kitab-Nya, rasul-rasul-Nya, hari akhir, dan beriman kepada takdir yang baik dan buruk."</div>`
+},
+{
+  cat: "fiqih",
+  keys: ["shalat","sholat","sholat lima waktu","rakaat","cara shalat","tata cara shalat"],
+  ans: `<h3>⚖️ Shalat</h3>
+<p><strong>Shalat</strong> secara bahasa berarti <em>doa</em>. Secara istilah adalah ibadah yang terdiri dari perkataan dan perbuatan tertentu yang diawali dengan takbiratul ihram dan diakhiri dengan salam.</p>
+<p><strong>Shalat 5 Waktu dan Jumlah Rakaat:</strong></p>
+<ul>
+<li><strong>Subuh:</strong> 2 rakaat (waktu: fajar shadiq – terbit matahari)</li>
+<li><strong>Dzuhur:</strong> 4 rakaat (waktu: matahari tergelincir – bayangan sama panjang)</li>
+<li><strong>Ashar:</strong> 4 rakaat (waktu: setelah Dzuhur – terbenam matahari)</li>
+<li><strong>Maghrib:</strong> 3 rakaat (waktu: terbenam matahari – hilangnya syafaq merah)</li>
+<li><strong>Isya:</strong> 4 rakaat (waktu: setelah Maghrib – terbit fajar)</li>
+</ul>
+<p><strong>Rukun Shalat (13 menurut mazhab Syafi'i):</strong></p>
+<ol>
+<li>Niat 2. Takbiratul Ihram 3. Berdiri (bagi yang mampu) 4. Membaca Al-Fatihah 5. Ruku' 6. I'tidal 7. Sujud 8. Duduk di antara dua sujud 9. Tuma'ninah 10. Tasyahhud Akhir 11. Duduk Tasyahhud Akhir 12. Shalawat Nabi 13. Salam</li>
+</ol>`
+},
+{
+  cat: "fiqih",
+  keys: ["syarat sah shalat","syarat shalat","syarat sholat","syarat sah sholat"],
+  ans: `<h3>⚖️ Syarat Sah Shalat</h3>
+<p><strong>Syarat sah shalat</strong> adalah hal-hal yang harus dipenuhi sebelum dan saat shalat agar shalatnya sah:</p>
+<ol>
+<li><strong>Suci dari hadats kecil dan besar:</strong> Berwudhu atau mandi junub</li>
+<li><strong>Suci badan, pakaian, dan tempat dari najis</strong></li>
+<li><strong>Menutup aurat:</strong> Laki-laki: pusar hingga lutut. Perempuan: seluruh tubuh kecuali wajah dan telapak tangan</li>
+<li><strong>Masuk waktu shalat:</strong> Tidak sah shalat sebelum waktunya</li>
+<li><strong>Menghadap kiblat (Ka'bah):</strong> Bagi yang mampu</li>
+<li><strong>Mengetahui masuknya waktu:</strong> Yakin bahwa waktu shalat telah tiba</li>
+</ol>
+<p><strong>Yang membatalkan shalat:</strong></p>
+<ul>
+<li>Berhadats (kentut, kencing, dll)</li>
+<li>Terkena najis</li>
+<li>Terbuka aurat dengan sengaja</li>
+<li>Berkata-kata dengan sengaja</li>
+<li>Bergerak banyak (3x berturut-turut)</li>
+<li>Makan dan minum dengan sengaja</li>
+<li>Tertawa terbahak-bahak</li>
+<li>Murtad (na'udzubillah)</li>
+<li>Mendahului imam 2 rukun</li>
+</ul>`
+},
+{
+  cat: "fiqih",
+  keys: ["wudhu","wudhu'","berwudhu","cara wudhu","syarat wudhu","rukun wudhu"],
+  ans: `<h3>⚖️ Wudhu</h3>
+<p><strong>Wudhu</strong> adalah bersuci menggunakan air untuk menghilangkan hadats kecil.</p>
+<p><strong>Rukun Wudhu (6 menurut mazhab Syafi'i):</strong></p>
+<ol>
+<li><strong>Niat:</strong> Dalam hati saat membasuh wajah</li>
+<li><strong>Membasuh wajah:</strong> Dari batas tumbuh rambut hingga dagu, dan dari telinga ke telinga</li>
+<li><strong>Membasuh kedua tangan hingga siku</strong></li>
+<li><strong>Mengusap sebagian kepala</strong></li>
+<li><strong>Membasuh kedua kaki hingga mata kaki</strong></li>
+<li><strong>Tertib:</strong> Berurutan sesuai rukun di atas</li>
+</ol>
+<p><strong>Sunnah Wudhu:</strong> Membaca Basmalah, bersiwak, mencuci kedua telapak tangan 3x, berkumur (madhmadhah), memasukkan air ke hidung (istinsyaq), mengusap seluruh kepala, mengusap kedua telinga, menyela-nyela jari, mendahulukan yang kanan, mengulang 3x, muwalat (berkesinambungan).</p>
+<p><strong>Yang membatalkan wudhu:</strong> Keluar sesuatu dari qubul/dubur, hilang akal (tidur, pingsan, gila), bersentuhan kulit laki-laki dan perempuan bukan mahram tanpa penghalang, menyentuh kemaluan dengan telapak tangan.</p>`
+},
+{
+  cat: "fiqih",
+  keys: ["puasa","shaum","puasa ramadhan","syarat puasa","rukun puasa","pembatal puasa"],
+  ans: `<h3>⚖️ Puasa (Shaum)</h3>
+<p><strong>Puasa</strong> secara bahasa berarti <em>menahan</em>. Secara istilah adalah menahan diri dari hal-hal yang membatalkan puasa mulai dari terbit fajar shadiq hingga terbenam matahari dengan niat.</p>
+<p><strong>Syarat Wajib Puasa:</strong> Islam, baligh, berakal, mampu (tidak sakit/musafir berat).</p>
+<p><strong>Rukun Puasa:</strong></p>
+<ol>
+<li><strong>Niat:</strong> Di malam hari (untuk puasa wajib)</li>
+<li><strong>Menahan diri</strong> dari pembatal puasa dari fajar hingga maghrib</li>
+</ol>
+<p><strong>Yang membatalkan puasa:</strong></p>
+<ul>
+<li>Makan dan minum dengan sengaja</li>
+<li>Muntah dengan sengaja</li>
+<li>Bersetubuh di siang hari</li>
+<li>Keluar mani dengan sengaja</li>
+<li>Haidh dan nifas</li>
+<li>Gila/pingsan sepanjang hari</li>
+<li>Murtad</li>
+<li>Memasukkan sesuatu ke dalam lubang tubuh yang terbuka</li>
+</ul>
+<p><strong>Jenis Puasa:</strong> Wajib (Ramadhan, Qadha, Kaffarat, Nadzar), Sunnah (Senin-Kamis, Ayyamul Bidh, Arafah, Asyura, Syawal 6 hari), Makruh (puasa terus-menerus/wishal), Haram (Hari Raya, Hari Tasyrik).</p>`
+},
+{
+  cat: "fiqih",
+  keys: ["zakat","zakat mal","zakat fitrah","nishab","harta zakat"],
+  ans: `<h3>⚖️ Zakat</h3>
+<p><strong>Zakat</strong> secara bahasa berarti <em>tumbuh, suci, dan berkah</em>. Secara istilah adalah mengeluarkan sebagian harta tertentu untuk golongan tertentu dengan syarat-syarat tertentu.</p>
+<p><strong>Dua Jenis Zakat:</strong></p>
+<p><strong>1. Zakat Fitrah:</strong></p>
+<ul>
+<li>Wajib bagi setiap Muslim yang memiliki kelebihan makanan pada hari Raya</li>
+<li>Ukuran: <strong>1 sha'</strong> (±2,5 kg atau 3,5 liter) makanan pokok</li>
+<li>Waktu: Boleh sejak awal Ramadhan, wajib sebelum shalat Idul Fitri</li>
+</ul>
+<p><strong>2. Zakat Mal (Harta):</strong></p>
+<ul>
+<li>Emas/Perak: Nishab 85g emas / 595g perak, kadar 2,5%</li>
+<li>Uang/Tabungan: Disamakan dengan emas, 2,5%</li>
+<li>Perniagaan: 2,5% dari nilai aset</li>
+<li>Pertanian: 10% (tadah hujan) / 5% (irigasi)</li>
+<li>Peternakan: Sesuai jenis dan jumlah</li>
+<li>Rikaz (temuan): 20%</li>
+</ul>
+<p><strong>8 Golongan Penerima Zakat (QS. At-Taubah: 60):</strong> Fakir, Miskin, Amil, Muallaf, Riqab, Gharim, Fisabilillah, Ibnu Sabil.</p>`
+},
+{
+  cat: "fiqih",
+  keys: ["haji","umrah","rukun haji","syarat haji","manasik haji"],
+  ans: `<h3>⚖️ Haji dan Umrah</h3>
+<p><strong>Haji</strong> adalah mengunjungi Baitullah (Ka'bah) untuk melaksanakan ibadah tertentu pada waktu tertentu dengan syarat-syarat tertentu.</p>
+<p><strong>Syarat Wajib Haji:</strong> Islam, baligh, berakal, merdeka, mampu (istitha'ah: fisik, finansial, keamanan).</p>
+<p><strong>Rukun Haji (6):</strong></p>
+<ol>
+<li><strong>Ihram</strong> (niat masuk manasik haji)</li>
+<li><strong>Wukuf di Arafah</strong> (9 Dzulhijjah)</li>
+<li><strong>Thawaf Ifadhah</strong> (mengelilingi Ka'bah 7x)</li>
+<li><strong>Sa'i</strong> (berjalan antara Shafa dan Marwah 7x)</li>
+<li><strong>Tahallul</strong> (mencukur/memotong rambut)</li>
+<li><strong>Tertib</strong></li>
+</ol>
+<p><strong>Wajib Haji:</strong> Ihram dari miqat, mabit di Muzdalifah, mabit di Mina, melontar jumrah, thawaf wada'.</p>
+<p><strong>Perbedaan Haji & Umrah:</strong> Umrah bisa dilakukan kapan saja, tidak ada wukuf, tidak ada mabit, tidak ada melontar jumrah. Rukun umrah: Ihram, Thawaf, Sa'i, Tahallul, Tertib.</p>`
+},
+{
+  cat: "fiqih",
+  keys: ["nikah","pernikahan","kawin","syarat nikah","rukun nikah","mahar"],
+  ans: `<h3>⚖️ Nikah (Pernikahan)</h3>
+<p><strong>Nikah</strong> secara bahasa berarti <em>berkumpul/bersatu</em>. Secara istilah adalah akad yang menghalalkan pergaulan antara laki-laki dan perempuan dengan syarat-syarat tertentu.</p>
+<p><strong>Hukum Nikah:</strong> Wajib (jika mampu & takut zina), Sunnah (mampu & berkeinginan), Makruh (tidak mampu nafkah), Haram (berniaya), Mubah (asal).</p>
+<p><strong>Rukun Nikah (5):</strong></p>
+<ol>
+<li><strong>Calon suami</strong> (Muslim, bukan mahram, tidak dalam ihram)</li>
+<li><strong>Calon istri</strong> (Muslimah/Kitabiyah, bukan mahram, tidak dalam iddah)</li>
+<li><strong>Wali</strong> (wali nasab atau wali hakim)</li>
+<li><strong>Dua orang saksi</strong> (laki-laki, adil, Muslim)</li>
+<li><strong>Ijab dan Qabul</strong> (serah terima)</li>
+</ol>
+<p><strong>Mahar:</strong> Harta yang wajib diberikan suami kepada istri. Tidak ada batas minimal/maksimal, namun dianjurkan yang mudah.</p>
+<div class="dalil">📌 "Nikahilah wanita yang penyayang dan subur (banyak anak), karena sesungguhnya aku akan membanggakan jumlah kalian di hadapan umat-umat lain." (HR. Abu Dawud & An-Nasa'i)</div>`
+},
+{
+  cat: "fiqih",
+  keys: ["talak","cerai","perceraian","iddah","rujuk"],
+  ans: `<h3>⚖️ Talak (Perceraian)</h3>
+<p><strong>Talak</strong> adalah melepas ikatan pernikahan dengan lafadz tertentu.</p>
+<p><strong>Jenis Talak:</strong></p>
+<ol>
+<li><strong>Talak Raj'i (1 & 2):</strong> Suami boleh rujuk selama masa iddah tanpa akad baru</li>
+<li><strong>Talak Ba'in Sughra:</strong> Talak 1/2 yang sudah habis iddahnya. Boleh nikah ulang dengan akad baru</li>
+<li><strong>Talak Ba'in Kubra:</strong> Talak 3. Tidak boleh rujuk/nikah lagi kecuali istri sudah nikah dengan laki-laki lain, berhubungan, lalu bercerai</li>
+</ol>
+<p><strong>Masa Iddah:</strong></p>
+<ul>
+<li>Wanita yang masih haidh: <strong>3 kali quru'</strong> (suci)</li>
+<li>Wanita yang tidak haidh: <strong>3 bulan</strong></li>
+<li>Wanita hamil: <strong>Sampai melahirkan</strong></li>
+<li>Wanita yang ditinggal mati suami: <strong>4 bulan 10 hari</strong></li>
+</ul>
+<div class="dalil">📌 "Perbuatan halal yang paling dibenci Allah adalah talak." (HR. Abu Dawud & Ibnu Majah)</div>`
+},
+{
+  cat: "fiqih",
+  keys: ["thaharah","bersuci","macam najis","jenis najis","najis"],
+  ans: `<h3>⚖️ Thaharah (Bersuci)</h3>
+<p><strong>Thaharah</strong> secara bahasa berarti <em>bersih dan suci</em>. Secara istilah adalah menghilangkan hadats dan najis.</p>
+<p><strong>Dua Jenis Thaharah:</strong></p>
+<ol>
+<li><strong>Thaharah dari Hadats:</strong>
+  <ul>
+    <li>Hadats Kecil → Wudhu</li>
+    <li>Hadats Besar → Mandi Junub (Ghusl)</li>
+    <li>Jika tidak ada air → Tayammum</li>
+  </ul>
+</li>
+<li><strong>Thaharah dari Najis:</strong> Membersihkan badan, pakaian, dan tempat dari najis</li>
+</ol>
+<p><strong>Pembagian Najis:</strong></p>
+<ul>
+<li><strong>Najis Mughallazhah (Berat):</strong> Anjing dan babi. Cara: 7x basuhan, salah satunya dengan tanah</li>
+<li><strong>Najis Mukhaffafah (Ringan):</strong> Air kencing bayi laki-laki <2 tahun yang belum makan selain ASI. Cara: Percikkan air</li>
+<li><strong>Najis Mutawassithah (Sedang):</strong> Darah, nanah, muntah, kencing, kotoran. Cara: Hilangkan zat, warna, bau, dan rasanya</li>
+</ul>`
+},
+{
+  cat: "fiqih",
+  keys: ["mazhab","madzhab","empat mazhab","hanafi","maliki","syafii","hanbali"],
+  ans: `<h3>⚖️ Empat Mazhab Fiqih</h3>
+<p><strong>Mazhab</strong> secara bahasa berarti <em>jalan/tempat pergi</em>. Secara istilah adalah metode ijtihad seorang imam mujtahid dalam menggali hukum syariat.</p>
+<p><strong>1. Mazhab Hanafi</strong> (80-150 H)</p>
+<ul>
+<li>Pendiri: Imam Abu Hanifah An-Nu'man bin Tsabit</li>
+<li>Metode: Banyak menggunakan ra'yu (akal) dan qiyas</li>
+<li>Wilayah: Turki, Asia Tengah, India, Pakistan</li>
+</ul>
+<p><strong>2. Mazhab Maliki</strong> (93-179 H)</p>
+<ul>
+<li>Pendiri: Imam Malik bin Anas</li>
+<li>Metode: Berpegang pada amal ahli Madinah, Mashalih Mursalah</li>
+<li>Wilayah: Afrika Utara, Andalusia</li>
+</ul>
+<p><strong>3. Mazhab Syafi'i</strong> (150-204 H)</p>
+<ul>
+<li>Pendiri: Imam Muhammad bin Idris Asy-Syafi'i</li>
+<li>Metode: Menengah antara ahlul hadits dan ahlur ra'yi. Qaul Qadim & Qaul Jadid</li>
+<li>Wilayah: Indonesia, Malaysia, Mesir, Yaman, Afrika Timur</li>
+</ul>
+<p><strong>4. Mazhab Hanbali</strong> (164-241 H)</p>
+<ul>
+<li>Pendiri: Imam Ahmad bin Hanbal</li>
+<li>Metode: Sangat berpegang pada nash (teks), hati-hati menggunakan ra'yu</li>
+<li>Wilayah: Arab Saudi, sebagian Teluk</li>
+</ul>`
+},
 
-let isProcessing = false;
+// ==================== USHUL FIQIH ====================
+{
+  cat: "ushul",
+  keys: ["ushul fiqih","ushul","usul fiqih","apa itu ushul fiqih","pengertian ushul fiqih"],
+  ans: `<h3>📐 Pengertian Ushul Fiqih</h3>
+<p><strong>Ushul Fiqih</strong> terdiri dari dua kata: <em>Ushul</em> (dasar/fondasi) dan <em>Fiqih</em> (pemahaman hukum).</p>
+<p>Secara istilah, Ushul Fiqih adalah <strong>ilmu tentang kaidah-kaidah dan metodologi yang digunakan untuk menggali (istinbath) hukum syariat</strong> dari dalil-dalilnya yang terperinci.</p>
+<p><strong>Perbedaan Ushul Fiqih dan Fiqih:</strong></p>
+<ul>
+<li><strong>Fiqih:</strong> Produk hukum (contoh: "Shalat wajib 5 waktu")</li>
+<li><strong>Ushul Fiqih:</strong> Metodologi/cara menghasilkan hukum (contoh: "Perintah menunjukkan kewajiban")</li>
+</ul>
+<p><strong>Sumber Hukum Islam (menurut jumhur):</strong></p>
+<ol>
+<li><strong>Al-Quran</strong> (sumber utama pertama)</li>
+<li><strong>As-Sunnah</strong> (sumber utama kedua)</li>
+<li><strong>Ijma'</strong> (kesepakatan ulama mujtahid)</li>
+<li><strong>Qiyas</strong> (analogi hukum)</li>
+</ol>
+<p>Sumber sekunder: Istihsan, Mashalih Mursalah, 'Urf, Saddudz Dzari'ah, Istishhab, Syar'u Man Qablana, Madzhab Shahabi.</p>`
+},
+{
+  cat: "ushul",
+  keys: ["ijma","ijma'","konsensus","kesepakatan ulama"],
+  ans: `<h3>📐 Ijma' (Konsensus Ulama)</h3>
+<p><strong>Ijma'</strong> secara bahasa berarti <em>tekad bulat/kesepakatan</em>. Secara istilah adalah <strong>kesepakatan seluruh mujtahid dari umat Muhammad ﷺ pada suatu masa setelah wafatnya Nabi ﷺ atas suatu hukum syariat</strong>.</p>
+<p><strong>Rukun Ijma':</strong></p>
+<ol>
+<li>Terjadi kesepakatan <strong>seluruh</strong> mujtahid (bukan mayoritas)</li>
+<li>Dari umat Nabi Muhammad ﷺ</li>
+<li>Setelah wafatnya Nabi ﷺ</li>
+<li>Tentang hukum syariat (bukan masalah duniawi)</li>
+</ol>
+<p><strong>Jenis Ijma':</strong></p>
+<ul>
+<li><strong>Ijma' Sharih (Tegas):</strong> Semua mujtahid menyatakan pendapat secara jelas dan sama. Ini yang <em>qath'i</em> (pasti).</li>
+<li><strong>Ijma' Sukuti (Diam):</strong> Sebagian mujtahid berpendapat, sisanya diam tanpa menyetujui/menolak. Statusnya <em>zhanni</em> (dugaan kuat) menurut sebagian ulama.</li>
+</ul>
+<div class="dalil">📌 Dalil kehujjahan Ijma': "Dan barangsiapa menentang Rasul sesudah jelas kebenaran baginya, dan mengikuti jalan yang bukan jalan orang-orang mukmin, Kami biarkan ia berkuasa terhadap kesesatannya..." (QS. An-Nisa: 115)</div>`
+},
+{
+  cat: "ushul",
+  keys: ["qiyas","qiyas fiqih","analogi","analogi hukum"],
+  ans: `<h3>📐 Qiyas (Analogi Hukum)</h3>
+<p><strong>Qiyas</strong> secara bahasa berarti <em>mengukur/menyamakan</em>. Secara istilah adalah <strong>menyamakan hukum suatu kasus yang tidak ada nash-nya dengan kasus yang ada nash-nya karena adanya kesamaan 'illat (alasan hukum)</strong>.</p>
+<p><strong>Rukun Qiyas (4):</strong></p>
+<ol>
+<li><strong>Ashl (Pokok):</strong> Kasus yang sudah ada hukumnya dalam nash</li>
+<li><strong>Far' (Cabang):</strong> Kasus baru yang belum ada hukumnya</li>
+<li><strong>Hukum Ashl:</strong> Hukum yang sudah ditetapkan pada kasus pokok</li>
+<li><strong>'Illat:</strong> Sifat/alasan yang menjadi sebab penetapan hukum, yang terdapat pada ashl dan far'</li>
+</ol>
+<p><strong>Contoh Qiyas:</strong></p>
+<ul>
+<li><em>Ashl:</em> Khamr (arak) diharamkan (QS. Al-Maidah: 90)</li>
+<li><em>Far':</em> Narkoba/bir</li>
+<li><em>'Illat:</em> Memabukkan (iskar)</li>
+<li><em>Hukum:</em> Narkoba/bir haram diqiyaskan pada khamr</li>
+</ul>
+<p><strong>Jenis Qiyas:</strong> Qiyas Aula (a fortiori), Qiyas Musawi (setara), Qiyas Adna (lebih rendah).</p>`
+},
+{
+  cat: "ushul",
+  keys: ["amar","perintah","nahyi","larangan","amr","nahi"],
+  ans: `<h3>📐 Amar (Perintah) dan Nahyi (Larangan)</h3>
+<p><strong>Amar (الأمر) – Perintah:</strong></p>
+<p>Secara istilah adalah lafadz yang menunjukkan tuntutan untuk mengerjakan sesuatu dari posisi yang lebih tinggi.</p>
+<ul>
+<li><strong>Hukum asal Amar:</strong> Menunjukkan <strong>wajib</strong> (menurut jumhur)</li>
+<li>Bisa berpaling dari wajib jika ada qarinah (indikasi) yang menunjukkan sunnah, irsyad (bimbingan), atau ibahah (kebolehan)</li>
+<li><strong>Contoh:</strong> "Dirikanlah shalat" → wajib</li>
+<li>Amar menuntut pelaksanaan <strong>segera</strong> (menurut jumhur) dan <strong>sekali</strong> (menurut mayoritas)</li>
+</ul>
+<p><strong>Nahyi (النهي) – Larangan:</strong></p>
+<p>Lafadz yang menunjukkan tuntutan untuk meninggalkan sesuatu.</p>
+<ul>
+<li><strong>Hukum asal Nahyi:</strong> Menunjukkan <strong>haram</strong> (menurut jumhur)</li>
+<li>Nahyi menuntut <strong>segera</strong> dan <strong>terus-menerus</strong> (meninggalkan selamanya)</li>
+<li>Nahyi juga menunjukkan <strong>kerusakan (fasad)</strong> pada yang dilarang</li>
+<li><strong>Contoh:</strong> "Janganlah kalian mendekati zina" → haram</li>
+</ul>`
+},
+{
+  cat: "ushul",
+  keys: ["am","khas","umum","khusus","takhsis","amm","khash"],
+  ans: `<h3>📐 'Am (Umum) dan Khash (Khusus)</h3>
+<p><strong>Al-'Am (العام) – Lafadz Umum:</strong></p>
+<p>Lafadz yang mencakup <strong>seluruh satuan</strong> yang layak baginya tanpa pembatasan. Contoh: kata "كل" (setiap), "جميع" (semua), jamak ma'rifah dengan alif-lam.</p>
+<p><strong>Contoh:</strong> "Allah menghalalkan jual beli" (QS. Al-Baqarah: 275) → mencakup semua jenis jual beli.</p>
+<p><strong>Al-Khash (الخاص) – Lafadz Khusus:</strong></p>
+<p>Lafadz yang menunjukkan <strong>satu, dua, atau jumlah tertentu</strong> yang terbatas. Contoh: angka (satu, dua, tiga...).</p>
+<p><strong>Takhsis (التخصيص) – Pengkhususan:</strong></p>
+<p>Proses mengeluarkan sebagian satuan dari cakupan lafadz 'am. Pembagiannya:</p>
+<ul>
+<li><strong>Takhsis Muttashil:</strong> Pengecualian (istitsna'), syarat, sifat, ghayah yang menyatu dalam satu kalimat</li>
+<li><strong>Takhsis Munfashil:</strong> Oleh nash lain (Al-Quran oleh Hadits atau sebaliknya), Ijma', Qiyas, akal, atau indra</li>
+</ul>
+<p><strong>Contoh Takhsis:</strong> "Semua bangkai haram" (umum) → dikhususkan oleh hadits: "Dihalalkan bagi kita dua bangkai dan dua darah: ikan & belalang, hati & limpa."</p>`
+},
+{
+  cat: "ushul",
+  keys: ["mujmal","mubayyan","mutlaq","muqayyad","muthlaq","muqayyad"],
+  ans: `<h3>📐 Mujmal-Mubayyan & Muthlaq-Muqayyad</h3>
+<p><strong>1. Mujmal (المجمل) & Mubayyan (المبيّن):</strong></p>
+<ul>
+<li><strong>Mujmal:</strong> Lafadz yang <em>belum jelas</em> maknanya dan membutuhkan penjelasan. Contoh: kata "shalat", "zakat" dalam Al-Quran (belum dirinci caranya).</li>
+<li><strong>Mubayyan:</strong> Penjelasan yang merinci lafadz mujmal. Contoh: Hadits Nabi ﷺ "Shalatlah kalian sebagaimana kalian melihat aku shalat" menjelaskan tata cara shalat.</li>
+</ul>
+<p><strong>2. Muthlaq (المطلق) & Muqayyad (المقيّد):</strong></p>
+<ul>
+<li><strong>Muthlaq:</strong> Lafadz yang menunjukkan hakikat sesuatu <em>tanpa batasan</em>. Contoh: "Memerdekakan budak" (mutlak, budak apa saja).</li>
+<li><strong>Muqayyad:</strong> Lafadz yang dibatasi dengan <em>sifat atau syarat</em>. Contoh: "Memerdekakan budak mukmin" (dibatasi sifat mukmin).</li>
+</ul>
+<p><strong>Kaidah:</strong> Jika Muthlaq dan Muqayyad sama hukum dan sebabnya, maka Muthlaq dibawa pada Muqayyad (dibatasi). Jika berbeda hukum/sebab, maka masing-masing berlaku sendiri.</p>`
+},
+{
+  cat: "ushul",
+  keys: ["nasikh","mansukh","naskh","mansukh","penghapusan hukum"],
+  ans: `<h3>📐 Nasikh dan Mansukh</h3>
+<p><strong>Naskh</strong> secara bahasa berarti <em>menghapus/memindahkan</em>. Secara istilah adalah <strong>mengangkat (menghapus) hukum syariat yang terdahulu dengan dalil syariat yang datang kemudian</strong>.</p>
+<p><strong>Rukun Naskh:</strong></p>
+<ol>
+<li><strong>Nasikh:</strong> Dalil yang menghapus</li>
+<li><strong>Mansukh:</strong> Hukum yang dihapus</li>
+<li><strong>Mansukh 'anhu:</strong> Mukallaf yang terkena hukum</li>
+</ol>
+<p><strong>Syarat Naskh:</strong></p>
+<ul>
+<li>Hukum yang dihapus adalah hukum syariat (bukan akal)</li>
+<li>Dalil nasikh datang <strong>setelah</strong> dalil mansukh (kronologis)</li>
+<li>Tidak mungkin mengamalkan keduanya secara bersamaan</li>
+<li>Naskh hanya terjadi pada masa hidup Nabi ﷺ (menurut jumhur)</li>
+</ul>
+<p><strong>Contoh Naskh:</strong></p>
+<ul>
+<li>Awalnya menghadap Baitul Maqdis → dinasakh menjadi menghadap Ka'bah</li>
+<li>Awalnya boleh makan/minum setelah tidur di malam Ramadhan → dinasakh boleh sampai terbit fajar</li>
+<li>Iddah 1 tahun bagi janda → dinasakh menjadi 4 bulan 10 hari</li>
+</ul>`
+},
+{
+  cat: "ushul",
+  keys: ["maslahah","mursalah","mashalih mursalah","istihsan","istishhab","saddudz dzariah","urf"],
+  ans: `<h3>📐 Sumber Hukum Sekunder</h3>
+<p><strong>1. Mashalih Mursalah:</strong> Kemaslahatan yang tidak ada nash khusus yang memerintahkan atau melarangnya. Contoh: pencatatan pernikahan, pembuatan mata uang, lalu lintas.</p>
+<p><strong>2. Istihsan:</strong> Meninggalkan qiyas jali (jelas) menuju qiyas khafi (samar) atau mengecualikan hukum kulli karena dalil khusus. Banyak digunakan mazhab Hanafi.</p>
+<p><strong>3. Istishhab:</strong> Menetapkan hukum yang sudah ada sebelumnya sampai ada dalil yang mengubahnya. Contoh: Seseorang dianggap tetap hidup sampai ada bukti kematiannya.</p>
+<p><strong>4. Saddudz Dzari'ah:</strong> Menutup jalan menuju kerusakan. Melarang sesuatu yang pada dasarnya boleh karena bisa mengantarkan pada yang haram. Contoh: melarang jual beli senjata saat fitnah.</p>
+<p><strong>5. 'Urf (Adat Kebiasaan):</strong> Kebiasaan masyarakat yang tidak bertentangan dengan syariat. Contoh: standar mahar, cara transaksi lokal.</p>
+<p><strong>6. Syar'u Man Qablana:</strong> Syariat umat sebelum kita (selama tidak dinasakh oleh syariat kita).</p>
+<p><strong>7. Madzhab Shahabi:</strong> Pendapat sahabat yang tidak diketahui ada sahabat lain yang menentangnya.</p>`
+},
 
-// ============================================
-// 4. FUNGSI UTILITAS & UI
-// ============================================
-function getWelcomeHTML() {
-return `<div class="welcome-screen" id="welcomeScreen">
-<div class="logo">🤖</div>
-<h2>Tanyakan Al-Khlas AI</h2>
-<p>Asisten AI Ahli Khazanah Islam — siap menjawab pertanyaan mendalam tentang <strong>Al-Quran, Hadits, Fiqih, Aqidah, Akhlak, Tasawuf, Nahwu, Sharaf, Balaghah, Tafsir, Sirah</strong>, serta topik umum lainnya.</p>
-<div class="hint">💡 Coba tanya:<br>• "Tuliskan 7 ayat pertama Surah Yasin beserta tafsirnya"<br>• "Jelaskan kaidah fiqih Al-Yaqinu La Yuzalu Bisy-Syak"<br>• "Apa itu i'rab dalam ilmu Nahwu?"</div>
-</div>`;
+// ==================== NAHWU ====================
+{
+  cat: "nahwu",
+  keys: ["nahwu","ilmu nahwu","apa itu nahwu","pengertian nahwu","nahwu sharaf","nahwu shorof"],
+  ans: `<h3>🔤 Ilmu Nahwu</h3>
+<p><strong>Nahwu</strong> secara bahasa berarti <em>arah, sisi, atau cara</em>. Secara istilah adalah <strong>ilmu yang mempelajari kaidah-kaidah untuk mengetahui keadaan akhir kata dalam bahasa Arab</strong> (i'rab) ketika tersusun dalam kalimat (jumlah).</p>
+<p><strong>Fokus utama Nahwu:</strong> Perubahan <strong>harakat akhir</strong> kata (i'rab) berdasarkan posisinya dalam kalimat.</p>
+<p><strong>Contoh:</strong></p>
+<ul>
+<li>جاءَ <strong>محمدٌ</strong> (Muhammad datang) → Marfu' (dhommah) karena Fa'il</li>
+<li>رأيتُ <strong>محمدًا</strong> (Aku melihat Muhammad) → Manshub (fathah) karena Maf'ul Bih</li>
+<li>مررتُ <strong>بمحمدٍ</strong> (Aku berpapasan dengan Muhammad) → Majrur (kasrah) karena huruf jar</li>
+</ul>
+<p><strong>Kitab Nahwu terkenal:</strong> Al-Ajurumiyyah (pemula), Qathrun Nada (menengah), Alfiyah Ibnu Malik (lanjutan).</p>
+<p><strong>Pendiri Ilmu Nahwu:</strong> Abu Al-Aswad Ad-Du'ali (w. 69 H), atas petunjuk Ali bin Abi Thalib RA.</p>`
+},
+{
+  cat: "nahwu",
+  keys: ["i'rab","irab","marfu","manshub","majrur","majzum","rafa","nashab","jar","jazm"],
+  ans: `<h3>🔤 I'rab (Perubahan Akhir Kata)</h3>
+<p><strong>I'rab</strong> adalah perubahan keadaan akhir kata karena perbedaan 'amil (faktor yang mempengaruhinya), baik secara lafadz maupun taqdir.</p>
+<p><strong>4 Jenis I'rab:</strong></p>
+<ol>
+<li><strong>Rafa' (الرَّفْع) – Marfu':</strong>
+  <ul>
+    <li>Tanda asal: <strong>Dhommah (ـُـ)</strong></li>
+    <li>Contoh: جاءَ <strong>الطالبُ</strong></li>
+    <li>Posisi: Fa'il, Na'ibul Fa'il, Mubtada', Khabar, dll</li>
+  </ul>
+</li>
+<li><strong>Nashab (النَّصْب) – Manshub:</strong>
+  <ul>
+    <li>Tanda asal: <strong>Fathah (ـَـ)</strong></li>
+    <li>Contoh: رأيتُ <strong>الطالبَ</strong></li>
+    <li>Posisi: Maf'ul Bih, Hal, Tamyiz, dll</li>
+  </ul>
+</li>
+<li><strong>Jarr (الجَرّ) – Majrur:</strong>
+  <ul>
+    <li>Tanda asal: <strong>Kasrah (ـِـ)</strong></li>
+    <li>Contoh: مررتُ <strong>بالطالبِ</strong></li>
+    <li>Posisi: Setelah huruf jar, Mudhaf Ilaih</li>
+  </ul>
+</li>
+<li><strong>Jazm (الجَزْم) – Majzum:</strong>
+  <ul>
+    <li>Tanda asal: <strong>Sukun (ـْـ)</strong></li>
+    <li>Contoh: لم <strong>يذهبْ</strong></li>
+    <li>Posisi: Fi'il Mudhari' yang dimasuki alat jazm</li>
+  </ul>
+</li>
+</ol>`
+},
+{
+  cat: "nahwu",
+  keys: ["jumlah ismiyyah","jumlah fi'liyyah","jumlah","kalimat arab","kalimat bahasa arab","susunan kalimat"],
+  ans: `<h3>🔤 Jenis-Jenis Jumlah (Kalimat)</h3>
+<p><strong>1. Jumlah Ismiyyah (الجملة الاسمية):</strong></p>
+<p>Kalimat yang diawali dengan <strong>Isim (kata benda)</strong>. Terdiri dari:</p>
+<ul>
+<li><strong>Mubtada' (المبتدأ):</strong> Subjek, hukumnya <em>marfu'</em>. Contoh: <strong>العلمُ</strong> (ilmu)</li>
+<li><strong>Khabar (الخبر):</strong> Predikat, hukumnya <em>marfu'</em>. Contoh: <strong>نافعٌ</strong> (bermanfaat)</li>
+</ul>
+<p>Contoh: <strong>العلمُ نافعٌ</strong> (Ilmu itu bermanfaat)</p>
+<p><strong>2. Jumlah Fi'liyyah (الجملة الفعلية):</strong></p>
+<p>Kalimat yang diawali dengan <strong>Fi'il (kata kerja)</strong>. Terdiri dari:</p>
+<ul>
+<li><strong>Fi'il (الفعل):</strong> Kata kerja</li>
+<li><strong>Fa'il (الفاعل):</strong> Pelaku, hukumnya <em>marfu'</em></li>
+<li><strong>Maf'ul Bih (المفعول به):</strong> Objek, hukumnya <em>manshub</em> (jika fi'il muta'addi)</li>
+</ul>
+<p>Contoh: <strong>كتبَ الطالبُ الدرسَ</strong> (Siswa menulis pelajaran)</p>
+<p><strong>3. Jumlah Syarthiyyah:</strong> Kalimat pengandaian (إنْ, إذا, لو, dll)</p>`
+},
+{
+  cat: "nahwu",
+  keys: ["isim","fiil","huruf","kata benda","kata kerja","pembagian kata","macam kata"],
+  ans: `<h3>🔤 Pembagian Kata dalam Bahasa Arab</h3>
+<p>Kata dalam bahasa Arab terbagi menjadi <strong>3 jenis</strong>:</p>
+<p><strong>1. Isim (الاسم) – Kata Benda/Nama:</strong></p>
+<ul>
+<li>Kata yang menunjukkan makna pada dirinya sendiri dan tidak terikat waktu</li>
+<li>Tanda-tanda: Tanwin, alif-lam (ال), huruf jar, huruf nida', bisa menjadi mubtada'/khabar</li>
+<li>Contoh: كتاب (kitab), محمد (Muhammad), مسجد (masjid)</li>
+</ul>
+<p><strong>2. Fi'il (الفعل) – Kata Kerja:</strong></p>
+<ul>
+<li>Kata yang menunjukkan makna pada dirinya sendiri dan terikat waktu</li>
+<li>Pembagian:
+  <ul>
+    <li><strong>Fi'il Madhi (الماضي):</strong> Lampau. Contoh: كتبَ (telah menulis)</li>
+    <li><strong>Fi'il Mudhari' (المضارع):</strong> Sekarang/akan datang. Contoh: يكتبُ (sedang/akan menulis)</li>
+    <li><strong>Fi'il Amr (الأمر):</strong> Perintah. Contoh: اكتبْ (tulislah!)</li>
+  </ul>
+</li>
+</ul>
+<p><strong>3. Huruf (الحرف) – Kata Tugas:</strong></p>
+<ul>
+<li>Kata yang tidak menunjukkan makna sempurna kecuali bersama kata lain</li>
+<li>Contoh: في (di), من (dari), على (di atas), هل (apakah), لم (tidak)</li>
+</ul>`
+},
+{
+  cat: "nahwu",
+  keys: ["fa'il","maf'ul","mubtada","khabar","naibul fail","subjek","objek","predikat"],
+  ans: `<h3>🔤 'Amal-Isim (Jabatan Isim dalam Kalimat)</h3>
+<p><strong>1. Mubtada' (المبتدأ):</strong> Isim marfu' yang terletak di awal kalimat sebagai subjek. Contoh: <strong>اللهُ</strong> أكبر.</p>
+<p><strong>2. Khabar (الخبر):</strong> Isim marfu' yang menyempurnakan makna mubtada'. Contoh: الله <strong>أكبرُ</strong>.</p>
+<p><strong>3. Fa'il (الفاعل):</strong> Isim marfu' yang terletak setelah fi'il ma'lum sebagai pelaku. Contoh: قامَ <strong>زيدٌ</strong> (Zaid berdiri).</p>
+<p><strong>4. Na'ibul Fa'il (نائب الفاعل):</strong> Isim marfu' yang menggantikan fa'il pada fi'il majhul (pasif). Contoh: ضُرِبَ <strong>زيدٌ</strong> (Zaid dipukul).</p>
+<p><strong>5. Maf'ul Bih (المفعول به):</strong> Isim manshub yang menjadi objek perbuatan. Contoh: أكلتُ <strong>الخبزَ</strong> (Aku makan roti).</p>
+<p><strong>6. Maf'ul Muthlaq (المفعول المطلق):</strong> Mashdar manshub untuk penegasan. Contoh: ضربتُ <strong>ضربًا</strong>.</p>
+<p><strong>7. Maf'ul Lih (المفعول له):</strong> Isim manshub yang menunjukkan sebab. Contoh: وقفتُ <strong>احترامًا</strong> (Aku berdiri karena hormat).</p>
+<p><strong>8. Maf'ul Fih (الظرف):</strong> Keterangan waktu/tempat. Contoh: جلستُ <strong>أمامَ</strong> المسجد.</p>
+<p><strong>9. Hal (الحال):</strong> Isim manshub yang menjelaskan keadaan. Contoh: جاء <strong>راكبًا</strong> (Dia datang dalam keadaan berkendaraan).</p>`
+},
+{
+  cat: "nahwu",
+  keys: ["huruf jar","harful jar","kata depan","fi","min","ila","ala","an","ba","lam","ka"],
+  ans: `<h3>🔤 Huruf Jar (Kata Depan)</h3>
+<p><strong>Huruf Jar</strong> adalah huruf yang menyebabkan isim setelahnya menjadi <strong>majrur (berkasrah)</strong>.</p>
+<p><strong>Huruf Jar yang paling umum (10+):</strong></p>
+<ul>
+<li><strong>مِنْ (min):</strong> Dari. Contoh: خرجتُ <strong>من</strong> البيتِ</li>
+<li><strong>إِلَى (ila):</strong> Ke. Contoh: ذهبتُ <strong>إلى</strong> المسجدِ</li>
+<li><strong>عَنْ ('an):</strong> Dari/tentang. Contoh: سألتُ <strong>عن</strong> الخبرِ</li>
+<li><strong>عَلَى ('ala):</strong> Di atas. Contoh: الكتابُ <strong>على</strong> المكتبِ</li>
+<li><strong>فِي (fi):</strong> Di dalam. Contoh: الماءُ <strong>في</strong> الكأسِ</li>
+<li><strong>بِ (bi):</strong> Dengan. Contoh: كتبتُ <strong>بـ</strong>القلمِ</li>
+<li><strong>لِ (li):</strong> Untuk/milik. Contoh: الحمدُ <strong>لـ</strong>اللهِ</li>
+<li><strong>كَ (ka):</strong> Seperti. Contoh: هو <strong>كـ</strong>الأسدِ</li>
+<li><strong>مُذْ / مُنْذُ (mundzu):</strong> Sejak</li>
+<li><strong>حَتَّى (hatta):</strong> Hingga</li>
+<li><strong>رُبَّ (rubba):</strong> Bisa jadi (untuk taktsir/tatslil)</li>
+<li><strong>تَاءُ القَسَم (ta'):</strong> Demi (untuk sumpah). Contoh: <strong>تـ</strong>اللهِ</li>
+</ul>
+<p>Isim setelah huruf jar hukumnya <strong>majrur</strong> dengan tanda kasrah (atau ya' untuk jamak mudzakkar salim, dan fathah untuk isim ghairu munsharif).</p>`
+},
+{
+  cat: "nahwu",
+  keys: ["na'at","sifat","mushaf","badal","athaf","ma'thuf","tawabi"],
+  ans: `<h3>🔤 Tawabi' (Pengikut) dalam Nahwu</h3>
+<p><strong>Tawabi'</strong> adalah kata yang mengikuti kata sebelumnya (matbu') dalam hal i'rab. Ada 4 jenis:</p>
+<p><strong>1. Na'at / Shifat (النعت/الصفة):</strong></p>
+<p>Kata sifat yang mengikuti yang disifati (man'ut) dalam i'rab, jenis, bilangan, dan ma'rifah/nakirah.</p>
+<p>Contoh: جاء الطالبُ <strong>المجتهدُ</strong> (Siswa yang rajin datang)</p>
+<p><strong>2. 'Athaf (العطف):</strong></p>
+<p>Menghubungkan kata dengan kata lain menggunakan huruf 'athaf (و, ف, ثم, أو, بل, لكن, لا, حتى, أم).</p>
+<p>Contoh: جاء محمدٌ <strong>وعليٌّ</strong> (Muhammad dan Ali datang)</p>
+<p><strong>3. Taukid (التوكيد):</strong></p>
+<p>Penguat. Contoh: جاء المديرُ <strong>نفسُهُ</strong> (Direktur itu sendiri datang)</p>
+<p><strong>4. Badal (البدل):</strong></p>
+<p>Pengganti. Ada 3 jenis: Badal Muthabiq (sama persis), Badal Ba'dh min Kull (sebagian dari keseluruhan), Badal Isytimal (cakupan).</p>
+<p>Contoh: جاء خالدٌ <strong>أخوك</strong> (Khalid, saudaramu, datang) – Badal Muthabiq</p>`
+},
+
+// ==================== SHARAF ====================
+{
+  cat: "sharaf",
+  keys: ["sharaf","shorof","ilmu sharaf","ilmu shorof","apa itu sharaf","pengertian sharaf","morfologi"],
+  ans: `<h3>🔄 Ilmu Sharaf (Morfologi Arab)</h3>
+<p><strong>Sharaf</strong> secara bahasa berarti <em>perubahan</em>. Secara istilah adalah <strong>ilmu yang mempelajari perubahan bentuk kata (bina') dari satu pola ke pola lain</strong> untuk menghasilkan makna yang berbeda, sebelum kata tersebut masuk dalam susunan kalimat.</p>
+<p><strong>Perbedaan Sharaf dan Nahwu:</strong></p>
+<ul>
+<li><strong>Sharaf:</strong> Membahas perubahan bentuk kata <em>sebelum</em> disusun dalam kalimat (internal kata)</li>
+<li><strong>Nahwu:</strong> Membahas perubahan harakat akhir kata <em>setelah</em> disusun dalam kalimat (eksternal kata)</li>
+</ul>
+<p><strong>Objek kajian Sharaf:</strong> Isim mutamakkin (isim yang bisa dii'rab) dan Fi'il ghairu jamid (kata kerja yang bisa berubah).</p>
+<p><strong>Timbangan Sharaf (Wazan):</strong> فَعَلَ - يَفْعُلُ (Fa'ala - Yaf'ulu) dengan huruf asli: ف (fa'), ع ('ain), ل (lam).</p>
+<p><strong>Kitab Sharaf terkenal:</strong> Amtsilatut Tashrifiyyah (Tashrif), Al-Bina' wal 'Ajal, Syadzaratudz Dzahab.</p>`
+},
+{
+  cat: "sharaf",
+  keys: ["tashrif","tashrif lughawi","tashrif istilahi","perubahan kata","wazan","bentuk kata"],
+  ans: `<h3>🔄 Tashrif (Perubahan Bentuk Kata)</h3>
+<p><strong>Tashrif</strong> adalah mengubah kata dari satu bentuk ke bentuk lain untuk menghasilkan makna yang berbeda.</p>
+<p><strong>1. Tashrif Istilahi (تصريف اصطلاحي):</strong></p>
+<p>Mengubah fi'il madhi ke berbagai bentuk kata (bina'). Contoh dari kata <strong>نَصَرَ</strong> (menolong):</p>
+<ul>
+<li>نَصَرَ (Fi'il Madhi) – telah menolong</li>
+<li>يَنْصُرُ (Fi'il Mudhari') – sedang/akan menolong</li>
+<li>اُنْصُرْ (Fi'il Amr) – tolonglah!</li>
+<li>نَاصِرٌ (Isim Fa'il) – penolong</li>
+<li>مَنْصُوْرٌ (Isim Maf'ul) – yang ditolong</li>
+<li>نَصْرًا (Mashdar) – pertolongan</li>
+<li>مَنْصَرٌ (Isim Makan) – tempat menolong</li>
+<li>مِنَصْرٌ (Isim Alat) – alat menolong</li>
+<li>نَاصِرٌ (Isim Tafdil) – lebih menolong</li>
+<li>اِسْتِنْصَارٌ (Fi'il Mazid) – memohon pertolongan</li>
+</ul>
+<p><strong>2. Tashrif Lughawi (تصريف لغوي):</strong></p>
+<p>Mengubah kata berdasarkan <strong>dhomir (kata ganti)</strong> – 14 bentuk:</p>
+<p>هو, هما, هم, هي, هما, هن, أنتَ, أنتما, أنتم, أنتِ, أنتما, أنتن, أنا, نحن</p>
+<p>Contoh: نَصَرَ, نَصَرَا, نَصَرُوا, نَصَرَتْ, نَصَرَتَا, نَصَرْنَ, نَصَرْتَ, نَصَرْتُمَا, نَصَرْتُمْ, نَصَرْتِ, نَصَرْتُمَا, نَصَرْتُنَّ, نَصَرْتُ, نَصَرْنَا</p>`
+},
+{
+  cat: "sharaf",
+  keys: ["fiil madhi","fiil mudhari","fiil amr","kata kerja lampau","kata kerja sekarang","kata kerja perintah"],
+  ans: `<h3>🔄 Tiga Jenis Fi'il (Kata Kerja)</h3>
+<p><strong>1. Fi'il Madhi (الفعل الماضي) – Kata Kerja Lampau:</strong></p>
+<p>Menunjukkan perbuatan yang <strong>sudah terjadi</strong> di masa lalu.</p>
+<ul>
+<li>Contoh: <strong>كَتَبَ</strong> (telah menulis), <strong>ذَهَبَ</strong> (telah pergi), <strong>جَلَسَ</strong> (telah duduk)</li>
+<li>Tanda: Bisa menerima ta' fa'il (تُ) dan ta' ta'nits (تْ)</li>
+<li>I'rab: Mabni (tetap), umumnya mabni 'ala fath</li>
+</ul>
+<p><strong>2. Fi'il Mudhari' (الفعل المضارع) – Kata Kerja Sekarang/Akan Datang:</strong></p>
+<p>Menunjukkan perbuatan yang <strong>sedang atau akan terjadi</strong>.</p>
+<ul>
+<li>Contoh: <strong>يَكْتُبُ</strong> (sedang menulis), <strong>يَذْهَبُ</strong> (sedang pergi)</li>
+<li>Tanda: Diawali huruf mudhara'ah (أ, ن, ي, ت) – "Anaytu"</li>
+<li>I'rab: Mu'rab (berubah) – Rafa', Nashab, Jazm</li>
+</ul>
+<p><strong>3. Fi'il Amr (فعل الأمر) – Kata Kerja Perintah:</strong></p>
+<p>Menunjukkan <strong>tuntutan untuk melakukan</strong> sesuatu.</p>
+<ul>
+<li>Contoh: <strong>اُكْتُبْ</strong> (tulislah!), <strong>اِذْهَبْ</strong> (pergilah!)</li>
+<li>Tanda: Bisa menerima ya' mu'annatsah mukhathabah (ي)</li>
+<li>I'rab: Mabni 'ala sukun (umumnya)</li>
+</ul>`
+},
+{
+  cat: "sharaf",
+  keys: ["isim fail","isim maf'ul","isim makan","isim zaman","isim alat","mashdar","isim tafdil"],
+  ans: `<h3>🔄 Isim-Isim Musytaq (Kata Turunan)</h3>
+<p><strong>1. Mashdar (المصدر):</strong> Kata dasar yang menunjukkan makna tanpa waktu. Contoh: <strong>عِلْمٌ</strong> (ilmu) dari عَلِمَ, <strong>كِتَابَةٌ</strong> (penulisan) dari كَتَبَ.</p>
+<p><strong>2. Isim Fa'il (اسم الفاعل):</strong> Pelaku. Pola: فَاعِلٌ (tsulatsi). Contoh: <strong>كَاتِبٌ</strong> (penulis), <strong>عَالِمٌ</strong> (yang mengetahui).</p>
+<p><strong>3. Isim Maf'ul (اسم المفعول):</strong> Objek penderita. Pola: مَفْعُوْلٌ. Contoh: <strong>مَكْتُوْبٌ</strong> (yang ditulis), <strong>مَعْلُوْمٌ</strong> (yang diketahui).</p>
+<p><strong>4. Isim Makan (اسم المكان):</strong> Tempat. Pola: مَفْعَلٌ / مَفْعِلٌ. Contoh: <strong>مَسْجِدٌ</strong> (tempat sujud), <strong>مَكْتَبٌ</strong> (tempat menulis).</p>
+<p><strong>5. Isim Zaman (اسم الزمان):</strong> Waktu. Pola sama dengan Isim Makan. Contoh: <strong>مَوْعِدٌ</strong> (waktu janji).</p>
+<p><strong>6. Isim Alat (اسم الآلة):</strong> Alat. Pola: مِفْعَلٌ / مِفْعَالٌ / مِفْعَلَةٌ. Contoh: <strong>مِفْتَاحٌ</strong> (kunci), <strong>مِقْلَمٌ</strong> (pena).</p>
+<p><strong>7. Isim Tafdil (اسم التفضيل):</strong> Perbandingan. Pola: أَفْعَلُ. Contoh: <strong>أَكْبَرُ</strong> (lebih besar), <strong>أَحْسَنُ</strong> (lebih baik).</p>`
+},
+{
+  cat: "sharaf",
+  keys: ["tsulatsi","rubai","mujarrad","mazid","fiil mujarrad","fiil mazid","bina fiil"],
+  ans: `<h3>🔄 Fi'il Mujarrad dan Mazid</h3>
+<p><strong>A. Fi'il Mujarrad (المجرّد) – Kata Kerja Polos:</strong></p>
+<p>Fi'il yang semua hurufnya adalah huruf asli (tidak ada huruf tambahan).</p>
+<ul>
+<li><strong>Tsulatsi Mujarrad (3 huruf):</strong> فَعَلَ. Contoh: كَتَبَ, نَصَرَ, ضَرَبَ, عَلِمَ, حَسُنَ
+  <ul>
+    <li>6 bab: فَعَلَ-يَفْعُلُ, فَعَلَ-يَفْعِلُ, فَعَلَ-يَفْعَلُ, فَعِلَ-يَفْعَلُ, فَعُلَ-يَفْعُلُ, فَعِلَ-يَفْعِلُ</li>
+  </ul>
+</li>
+<li><strong>Ruba'i Mujarrad (4 huruf):</strong> فَعْلَلَ. Contoh: زَلْزَلَ (mengguncang), دَحْرَجَ (menggelindingkan)</li>
+</ul>
+<p><strong>B. Fi'il Mazid (المزيد) – Kata Kerja Bertambahan:</strong></p>
+<p>Fi'il yang mendapat tambahan 1-3 huruf dari huruf aslinya.</p>
+<ul>
+<li><strong>Tsulatsi Mazid 1 huruf:</strong>
+  <ul>
+    <li>أَفْعَلَ (hamzah): أَكْرَمَ (memuliakan)</li>
+    <li>فَاعَلَ (alif): قَاتَلَ (memerangi)</li>
+    <li>فَعَّلَ (tasydid): عَلَّمَ (mengajarkan)</li>
+  </ul>
+</li>
+<li><strong>Tsulatsi Mazid 2 huruf:</strong>
+  <ul>
+    <li>اِنْفَعَلَ: اِنْكَسَرَ (terpecah)</li>
+    <li>اِفْتَعَلَ: اِجْتَمَعَ (berkumpul)</li>
+    <li>اِفْعَالَّ: اِحْمَارَّ (memerah)</li>
+    <li>تَفَاعَلَ: تَقَاتَلَ (saling memerangi)</li>
+    <li>تَفَعَّلَ: تَعَلَّمَ (belajar)</li>
+  </ul>
+</li>
+<li><strong>Tsulatsi Mazid 3 huruf:</strong>
+  <ul>
+    <li>اِسْتَفْعَلَ: اِسْتَغْفَرَ (memohon ampun)</li>
+    <li>اِفْعَوْعَلَ: اِعْشَوْشَبَ (tumbuh subur)</li>
+    <li>اِفْعَوَّلَ: اِجْلَوَّذَ (berlari cepat)</li>
+    <li>اِفْعَالَّ: اِسْحَارَّ (sangat hitam)</li>
+  </ul>
+</li>
+</ul>`
+},
+{
+  cat: "sharaf",
+  keys: ["dhomir","kata ganti","dhomir munfashil","dhomir muttashil","ganti orang"],
+  ans: `<h3>🔄 Dhomir (Kata Ganti)</h3>
+<p><strong>Dhomir</strong> adalah kata ganti orang/benda. Terbagi menjadi:</p>
+<p><strong>1. Dhomir Munfashil (terpisah):</strong></p>
+<table style="width:100%;font-size:0.8rem;border-collapse:collapse">
+<tr><th>Orang</th><th>Tunggal</th><th>Ganda</th><th>Jamak</th></tr>
+<tr><td>Ghaib (3rd)</td><td>هُوَ / هِيَ</td><td>هُمَا</td><td>هُمْ / هُنَّ</td></tr>
+<tr><td>Mukhathab (2nd)</td><td>أَنْتَ / أَنْتِ</td><td>أَنْتُمَا</td><td>أَنْتُمْ / أَنْتُنَّ</td></tr>
+<tr><td>Mutakallim (1st)</td><td>أَنَا</td><td>—</td><td>نَحْنُ</td></tr>
+</table>
+<p><strong>2. Dhomir Muttashil (bersambung):</strong></p>
+<ul>
+<li>ـهُ / ـهَا (nya), ـهُمَا (nya berdua), ـهُمْ / ـهُنَّ (mereka)</li>
+<li>ـكَ / ـكِ (mu), ـكُمَا (mu berdua), ـكُمْ / ـكُنَّ (kalian)</li>
+<li>ـنِي / ـي (ku), ـنَا (kami/kita)</li>
+</ul>
+<p><strong>14 Dhomir dalam Tashrif Lughawi:</strong></p>
+<p>هو، هما، هم، هي، هما، هن، أنتَ، أنتما، أنتم، أنتِ، أنتما، أنتن، أنا، نحن</p>`
+},
+
+// ==================== UMUM ====================
+{
+  cat: "umum",
+  keys: ["siapa nabi muhammad","nabi muhammad","muhammad","rasulullah","siapa rasulullah","biografi nabi"],
+  ans: `<h3>🌍 Nabi Muhammad ﷺ</h3>
+<p><strong>Nabi Muhammad ﷺ</strong> adalah nabi dan rasul terakhir yang diutus Allah SWT untuk seluruh umat manusia.</p>
+<ul>
+<li><strong>Nama lengkap:</strong> Muhammad bin Abdullah bin Abdul Muththalib bin Hasyim</li>
+<li><strong>Kelahiran:</strong> 12 Rabiul Awal Tahun Gajah (571 M) di Makkah</li>
+<li><strong>Ayah:</strong> Abdullah bin Abdul Muththalib (wafat sebelum Nabi lahir)</li>
+<li><strong>Ibu:</strong> Aminah binti Wahab (wafat saat Nabi berusia 6 tahun)</li>
+<li><strong>Pengasuh:</strong> Halimah As-Sa'diyah (ibu susuan), Abdul Muththalib (kakek), Abu Thalib (paman)</li>
+<li><strong>Istri pertama:</strong> Khadijah binti Khuwailid (menikah saat Nabi 25 tahun, Khadijah 40 tahun)</li>
+<li><strong>Kenabian:</strong> Usia 40 tahun (610 M), menerima wahyu pertama di Gua Hira</li>
+<li><strong>Hijrah:</strong> 622 M ke Madinah (awal kalender Hijriyah)</li>
+<li><strong>Wafat:</strong> 12 Rabiul Awal 11 H (632 M) di Madinah, usia 63 tahun</li>
+</ul>
+<p><strong>Gelar:</strong> Al-Amin (Terpercaya), Khatamul Anbiya (Penutup Para Nabi), Rahmatan lil 'Alamin (Rahmat bagi Semesta).</p>`
+},
+{
+  cat: "umum",
+  keys: ["25 nabi","nabi dan rasul","nama nabi","25 rasul","nabi adam","nabi nuh","nabi ibrahim","nabi musa","nabi isa"],
+  ans: `<h3>🌍 25 Nabi dan Rasul</h3>
+<p>Nabi dan Rasul yang wajib diketahui berjumlah <strong>25</strong>:</p>
+<ol>
+<li>Adam AS 2. Idris AS 3. Nuh AS 4. Hud AS 5. Shalih AS</li>
+<li>Ibrahim AS 7. Luth AS 8. Ismail AS 9. Ishaq AS 10. Ya'qub AS</li>
+<li>Yusuf AS 12. Ayyub AS 13. Syu'aib AS 14. Musa AS 15. Harun AS</li>
+<li>Dzul Kifli AS 17. Daud AS 18. Sulaiman AS 19. Ilyas AS 20. Ilyasa' AS</li>
+<li>Yunus AS 22. Zakariya AS 23. Yahya AS 24. Isa AS 25. Muhammad ﷺ</li>
+</ol>
+<p><strong>Ulul Azmi (5 Rasul berketeguhan tinggi):</strong> Nuh, Ibrahim, Musa, Isa, Muhammad ﷺ (disingkat <strong>NUHIM</strong>).</p>
+<p><strong>Perbedaan Nabi dan Rasul:</strong></p>
+<ul>
+<li><strong>Nabi:</strong> Menerima wahyu untuk dirinya sendiri (tidak wajib menyampaikan)</li>
+<li><strong>Rasul:</strong> Menerima wahyu dan wajib menyampaikannya kepada umat</li>
+<li>Setiap Rasul pasti Nabi, tapi tidak setiap Nabi adalah Rasul</li>
+</ul>
+<div class="dalil">📌 Jumlah seluruh nabi: 124.000 nabi, 313 rasul (menurut sebagian riwayat)</div>`
+},
+{
+  cat: "umum",
+  keys: ["malaikat","10 malaikat","jibril","mikail","israfil","izrail","munkar","nakir","raqib","atid","malik","ridwan"],
+  ans: `<h3>🌍 10 Malaikat yang Wajib Diketahui</h3>
+<p>Malaikat adalah makhluk Allah yang diciptakan dari <strong>cahaya (nur)</strong>, selalu taat, tidak memiliki hawa nafsu, dan tidak pernah bermaksiat.</p>
+<ol>
+<li><strong>Jibril AS:</strong> Menyampaikan wahyu kepada para nabi</li>
+<li><strong>Mikail AS:</strong> Mengatur rezeki dan hujan</li>
+<li><strong>Israfil AS:</strong> Meniup sangkakala pada hari kiamat</li>
+<li><strong>Izrail AS (Malaikat Maut):</strong> Mencabut nyawa</li>
+<li><strong>Munkar AS:</strong> Menanyai di alam kubur</li>
+<li><strong>Nakir AS:</strong> Menanyai di alam kubur</li>
+<li><strong>Raqib AS:</strong> Mencatat amal baik</li>
+<li><strong>Atid AS:</strong> Mencatat amal buruk</li>
+<li><strong>Malik AS:</strong> Penjaga neraka</li>
+<li><strong>Ridwan AS:</strong> Penjaga surga</li>
+</ol>
+<p><strong>Sifat Malaikat:</strong> Tidak makan/minum, tidak tidur, tidak berjenis kelamin, bisa berubah wujud, memiliki sayap (2, 3, 4, atau lebih), tidak pernah durhaka kepada Allah.</p>`
+},
+{
+  cat: "umum",
+  keys: ["kitab allah","taurat","zabur","injil","quran","4 kitab","empat kitab"],
+  ans: `<h3>🌍 4 Kitab Suci dan Suhuf</h3>
+<p><strong>4 Kitab Suci:</strong></p>
+<ol>
+<li><strong>Taurat:</strong> Diturunkan kepada Nabi <strong>Musa AS</strong> (untuk Bani Israil). Berisi hukum-hukum dan syariat.</li>
+<li><strong>Zabur:</strong> Diturunkan kepada Nabi <strong>Daud AS</strong>. Berisi nyanyian pujian, doa, dan nasihat.</li>
+<li><strong>Injil:</strong> Diturunkan kepada Nabi <strong>Isa AS</strong>. Berisi ajaran tauhid dan kabar gembira tentang kedatangan Nabi Muhammad ﷺ.</li>
+<li><strong>Al-Quran:</strong> Diturunkan kepada Nabi <strong>Muhammad ﷺ</strong>. Kitab penyempurna dan penjaga kitab-kitab sebelumnya.</li>
+</ol>
+<p><strong>Suhuf (Lembaran):</strong></p>
+<ul>
+<li>Suhuf Ibrahim AS (10 shahifah)</li>
+<li>Suhuf Musa AS (sebelum Taurat)</li>
+<li>Suhuf Syits AS</li>
+<li>Suhuf Idris AS</li>
+</ul>
+<div class="dalil">📌 "Sesungguhnya Kami telah menurunkan Taurat, di dalamnya ada petunjuk dan cahaya." (QS. Al-Maidah: 44)</div>`
+},
+{
+  cat: "umum",
+  keys: ["hari kiamat","kiamat","hari akhir","yaumul qiyamah","tanda kiamat","kiamat kubra","kiamat sughra"],
+  ans: `<h3>🌍 Hari Kiamat (Yaumul Qiyamah)</h3>
+<p><strong>Kiamat</strong> adalah hari hancurnya alam semesta dan dibangkitkannya seluruh makhluk untuk dihisab.</p>
+<p><strong>1. Kiamat Sughra (Kecil):</strong> Kematian setiap individu, bencana alam, dan peristiwa-peristiwa besar yang terjadi sebelum kiamat besar.</p>
+<p><strong>2. Kiamat Kubra (Besar):</strong> Hancurnya seluruh alam semesta.</p>
+<p><strong>Tanda-tanda Kiamat Besar:</strong></p>
+<ol>
+<li>Munculnya <strong>Dajjal</strong></li>
+<li>Turunnya <strong>Nabi Isa AS</strong></li>
+<li>Keluarnya <strong>Ya'juj dan Ma'juj</strong></li>
+<li>Terbitnya <strong>matahari dari barat</strong></li>
+<li>Keluarnya <strong>Dabbatul Ardh</strong> (binatang melata dari bumi)</li>
+<li>Asap (<strong>Ad-Dukhan</strong>) yang menyelimuti bumi</li>
+<li>Tiga <strong>gerhana/penenggelaman</strong> besar (timur, barat, Jazirah Arab)</li>
+<li>Api besar dari <strong>Yaman</strong> yang menggiring manusia</li>
+<li>Tiupan <strong>sangkakala</strong> pertama (kematian semua makhluk)</li>
+<li>Tiupan <strong>sangkakala</strong> kedua (kebangkitan)</li>
+</ol>`
+},
+{
+  cat: "umum",
+  keys: ["surga","neraka","jannah","nar","nama surga","nama neraka"],
+  ans: `<h3>🌍 Surga dan Neraka</h3>
+<p><strong>Surga (Al-Jannah):</strong> Tempat kenikmatan abadi bagi orang-orang beriman dan beramal shalih.</p>
+<p><strong>8 Pintu Surga:</strong></p>
+<ol>
+<li><strong>Al-Firdaus:</strong> Surga tertinggi</li>
+<li><strong>'Adn:</strong> Surga tempat tinggal</li>
+<li><strong>An-Na'im:</strong> Surga kenikmatan</li>
+<li><strong>Al-Ma'wa:</strong> Surga tempat berlindung</li>
+<li><strong>Darus Salam:</strong> Surga kedamaian</li>
+<li><strong>Darul Muqamah:</strong> Surga tempat menetap</li>
+<li><strong>Al-Maqamul Amin:</strong> Surga tempat yang aman</li>
+<li><strong>Al-Khuld:</strong> Surga kekekalan</li>
+</ol>
+<p><strong>Neraka (An-Nar):</strong> Tempat siksaan bagi orang-orang kafir dan pelaku maksiat.</p>
+<p><strong>7 Tingkatan Neraka:</strong></p>
+<ol>
+<li><strong>Jahannam</strong> 2. <strong>Lazha</strong> 3. <strong>Huthamah</strong> 4. <strong>Sa'ir</strong> 5. <strong>Saqar</strong> 6. <strong>Jahim</strong> 7. <strong>Hawiyah</strong></li>
+</ol>`
+},
+{
+  cat: "umum",
+  keys: ["islam","apa itu islam","pengertian islam","definisi islam","agama islam"],
+  ans: `<h3>🌍 Pengertian Islam</h3>
+<p><strong>Islam</strong> secara bahasa berasal dari kata <em>aslama - yuslimu - islaman</em> yang berarti <em>tunduk, patuh, selamat, dan damai</em>.</p>
+<p>Secara istilah, Islam adalah <strong>agama yang diturunkan Allah SWT kepada Nabi Muhammad ﷺ</strong> sebagai penyempurna agama-agama sebelumnya, berisi syariat yang mengatur seluruh aspek kehidupan manusia untuk mencapai kebahagiaan di dunia dan akhirat.</p>
+<p><strong>3 Tingkatan Agama (Hadits Jibril):</strong></p>
+<ol>
+<li><strong>Islam:</strong> Amalan lahiriah (5 Rukun Islam)</li>
+<li><strong>Iman:</strong> Keyakinan batin (6 Rukun Iman)</li>
+<li><strong>Ihsan:</strong> "Engkau beribadah kepada Allah seakan-akan engkau melihat-Nya. Jika engkau tidak melihat-Nya, maka sesungguhnya Dia melihatmu."</li>
+</ol>
+<p><strong>Sumber Ajaran Islam:</strong> Al-Quran dan As-Sunnah (Hadits).</p>
+<p><strong>Ciri Islam:</strong> Rahmatan lil 'alamin (rahmat bagi semesta), mudah dan tidak memberatkan, seimbang antara dunia dan akhirat, berlaku universal untuk seluruh umat manusia.</p>`
+},
+{
+  cat: "umum",
+  keys: ["doa","doa harian","doa sehari-hari","doa makan","doa tidur","doa bangun tidur"],
+  ans: `<h3>🌍 Doa-Doa Harian</h3>
+<p><strong>Doa Sebelum Makan:</strong></p>
+<div class="arabic">بِسْمِ اللَّهِ وَعَلَى بَرَكَةِ اللَّهِ</div>
+<p><strong>Doa Sesudah Makan:</strong></p>
+<div class="arabic">الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنَا وَسَقَانَا وَجَعَلَنَا مُسْلِمِينَ</div>
+<p><strong>Doa Sebelum Tidur:</strong></p>
+<div class="arabic">بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا</div>
+<p><strong>Doa Bangun Tidur:</strong></p>
+<div class="arabic">الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ</div>
+<p><strong>Doa Masuk Masjid:</strong></p>
+<div class="arabic">اللَّهُمَّ افْتَحْ لِي أَبْوَابَ رَحْمَتِكَ</div>
+<p><strong>Doa Keluar Masjid:</strong></p>
+<div class="arabic">اللَّهُمَّ إِنِّي أَسْأَلُكَ مِنْ فَضْلِكَ</div>
+<p><strong>Doa Masuk WC:</strong></p>
+<div class="arabic">اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْخُبُثِ وَالْخَبَائِثِ</div>
+<p><strong>Doa Naik Kendaraan:</strong></p>
+<div class="arabic">سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ وَإِنَّا إِلَى رَبِّنَا لَمُنْقَلِبُونَ</div>`
+},
+{
+  cat: "umum",
+  keys: ["adzan","iqamah","azan","seruan shalat","lafadz adzan"],
+  ans: `<h3>🌍 Adzan dan Iqamah</h3>
+<p><strong>Adzan</strong> adalah seruan untuk memberitahu masuknya waktu shalat wajib.</p>
+<p><strong>Lafadz Adzan:</strong></p>
+<div class="arabic">
+اللهُ أَكْبَرُ اللهُ أَكْبَرُ (2x)<br>
+أَشْهَدُ أَنْ لَا إِلَٰهَ إِلَّا اللَّهُ (2x)<br>
+أَشْهَدُ أَنَّ مُحَمَّدًا رَسُولُ اللَّهِ (2x)<br>
+حَيَّ عَلَى الصَّلَاةِ (2x)<br>
+حَيَّ عَلَى الْفَلَاحِ (2x)<br>
+اللهُ أَكْبَرُ اللهُ أَكْبَرُ<br>
+لَا إِلَٰهَ إِلَّا اللَّهُ
+</div>
+<p>Untuk adzan Subuh ditambahkan setelah "Hayya 'alal falah":</p>
+<div class="arabic">الصَّلَاةُ خَيْرٌ مِنَ النَّوْمِ (2x)</div>
+<p><strong>Iqamah</strong> sama seperti adzan, dengan tambahan setelah "Hayya 'alal falah":</p>
+<div class="arabic">قَدْ قَامَتِ الصَّلَاةُ قَدْ قَامَتِ الصَّلَاةُ</div>
+<p><strong>Sunnah Adzan:</strong> Menghadap kiblat, memasukkan jari ke telinga, mengeraskan suara, tartil, menoleh kanan-kiri saat hayya 'ala.</p>`
+},
+{
+  cat: "umum",
+  keys: ["kalender hijriyah","hijriyah","tahun hijriyah","bulan islam","bulan hijriyah","12 bulan"],
+  ans: `<h3>🌍 Kalender Hijriyah</h3>
+<p><strong>Kalender Hijriyah</strong> adalah kalender Islam yang dihitung berdasarkan peredaran bulan (qamariyah), dimulai dari peristiwa <strong>Hijrah Nabi ﷺ dari Makkah ke Madinah</strong> (622 M).</p>
+<p><strong>12 Bulan Hijriyah:</strong></p>
+<ol>
+<li><strong>Muharram</strong> (bulan haram, awal tahun)</li>
+<li><strong>Shafar</strong></li>
+<li><strong>Rabiul Awal</strong> (bulan kelahiran Nabi ﷺ)</li>
+<li><strong>Rabiul Akhir / Rabiuts Tsani</strong></li>
+<li><strong>Jumadil Awal / Jumadil Ula</strong></li>
+<li><strong>Jumadil Akhir / Jumadits Tsaniyah</strong></li>
+<li><strong>Rajab</strong> (bulan haram, Isra' Mi'raj)</li>
+<li><strong>Sya'ban</strong> (Nisfu Sya'ban)</li>
+<li><strong>Ramadhan</strong> (bulan puasa)</li>
+<li><strong>Syawwal</strong> (Idul Fitri)</li>
+<li><strong>Dzulqa'dah</strong> (bulan haram)</li>
+<li><strong>Dzulhijjah</strong> (bulan haram, Haji, Idul Adha)</li>
+</ol>
+<p><strong>4 Bulan Haram:</strong> Muharram, Rajab, Dzulqa'dah, Dzulhijjah.</p>
+<p>Satu tahun Hijriyah = 354 atau 355 hari (lebih pendek ±11 hari dari tahun Masehi).</p>`
+},
+{
+  cat: "umum",
+  keys: ["sahabat nabi","khulafaur rasyidin","abu bakar","umar","utsman","ali","sahabat"],
+  ans: `<h3>🌍 Khulafaur Rasyidin & Sahabat Nabi</h3>
+<p><strong>Khulafaur Rasyidin</strong> (4 Khalifah yang mendapat petunjuk):</p>
+<ol>
+<li><strong>Abu Bakar Ash-Shiddiq RA</strong> (11-13 H / 632-634 M): Sahabat terdekat Nabi, orang pertama yang masuk Islam dari kalangan laki-laki dewasa. Memerangi nabi palsu dan kaum murtad, mengkodifikasi Al-Quran.</li>
+<li><strong>Umar bin Khattab RA</strong> (13-23 H / 634-644 M): Al-Faruq. Penaklukan Persia dan Romawi. Menetapkan kalender Hijriyah, membentuk Baitul Mal, mendirikan lembaga peradilan.</li>
+<li><strong>Utsman bin Affan RA</strong> (23-35 H / 644-656 M): Dzun Nurain (pemilik dua cahaya, menikahi 2 putri Nabi). Menstandarisasi mushaf Al-Quran (Mushaf Utsmani).</li>
+<li><strong>Ali bin Abi Thalib RA</strong> (35-40 H / 656-661 M): Babul 'Ilmi (pintu ilmu). Sepupu dan menantu Nabi ﷺ. Dikenal sebagai ahli hukum dan pejuang pemberani.</li>
+</ol>
+<p><strong>10 Sahabat yang Dijamin Surga (Al-'Asyarah Al-Mubasysyarah):</strong> Abu Bakar, Umar, Utsman, Ali, Thalhah, Az-Zubair, Abdurrahman bin Auf, Sa'ad bin Abi Waqqash, Sa'id bin Zaid, Abu Ubaidah bin Al-Jarrah.</p>`
+},
+{
+  cat: "umum",
+  keys: ["sirah","sirah nabawiyah","sejarah nabi","hijrah","perang badar","perang uhud","fathu makkah"],
+  ans: `<h3>🌍 Sirah Nabawiyah (Ringkasan)</h3>
+<p><strong>Periode Makkah (610-622 M):</strong></p>
+<ul>
+<li>610 M: Wahyu pertama di Gua Hira</li>
+<li>613 M: Dakwah terang-terangan</li>
+<li>615 M: Hijrah pertama ke Habasyah (Ethiopia)</li>
+<li>616-619 M: Pemboikotan Bani Hasyim</li>
+<li>619 M: 'Amul Huzn (Tahun Kesedihan) – wafatnya Khadijah & Abu Thalib</li>
+<li>621 M: Isra' Mi'raj, Bai'at Aqabah I & II</li>
+</ul>
+<p><strong>Periode Madinah (622-632 M):</strong></p>
+<ul>
+<li>622 M: Hijrah ke Madinah (awal kalender Hijriyah)</li>
+<li>623 M: Perang Badar (kemenangan besar, 313 vs 1000)</li>
+<li>624 M: Perang Uhud (kalah karena pelanggaran perintah)</li>
+<li>627 M: Perang Khandaq/Ahzab (parit)</li>
+<li>628 M: Perjanjian Hudaibiyah</li>
+<li>630 M: Fathu Makkah (penaklukan Makkah tanpa pertumpahan darah)</li>
+<li>632 M: Haji Wada' (Haji Perpisahan), wafat 12 Rabiul Awal 11 H</li>
+</ul>`
+},
+{
+  cat: "umum",
+  keys: ["aqidah","akidah","tauhid","macam tauhid","rububiyah","uluhiyah","asma wa sifat"],
+  ans: `<h3>🌍 Aqidah dan Tauhid</h3>
+<p><strong>Aqidah</strong> secara bahasa berarti <em>ikatan yang kuat</em>. Secara istilah adalah <strong>keyakinan yang kokoh dalam hati</strong> tanpa keraguan sedikit pun tentang perkara-perkara yang wajib diimani.</p>
+<p><strong>3 Macam Tauhid:</strong></p>
+<ol>
+<li><strong>Tauhid Rububiyah:</strong> Mengesakan Allah dalam perbuatan-Nya (mencipta, mengatur, memberi rezeki, menghidupkan, mematikan). Ini diakui bahkan oleh kaum musyrikin Quraisy.</li>
+<li><strong>Tauhid Uluhiyah (Ibadah):</strong> Mengesakan Allah dalam ibadah. Hanya beribadah kepada Allah semata. Ini yang menjadi inti dakwah para rasul.</li>
+<li><strong>Tauhid Asma' wa Sifat:</strong> Menetapkan nama-nama dan sifat-sifat Allah sesuai yang ditetapkan dalam Al-Quran dan Hadits tanpa tahrif (mengubah), ta'thil (meniadakan), takyif (membagaimanakan), dan tamtsil (menyerupakan).</li>
+</ol>
+<p><strong>Lawan Tauhid = Syirik:</strong></p>
+<ul>
+<li><strong>Syirik Akbar (Besar):</strong> Mengeluarkan dari Islam. Contoh: berdoa kepada selain Allah, menyembelih untuk jin</li>
+<li><strong>Syirik Ashghar (Kecil):</strong> Tidak mengeluarkan dari Islam tapi dosa besar. Contoh: riya', bersumpah dengan selain Allah</li>
+</ul>`
+},
+{
+  cat: "umum",
+  keys: ["akhlak","adab","akhlak islam","budi pekerti","adab islam"],
+  ans: `<h3>🌍 Akhlak dalam Islam</h3>
+<p><strong>Akhlak</strong> secara bahasa berarti <em>tabiat, budi pekerti, atau perangai</em>. Secara istilah adalah sifat yang tertanam dalam jiwa yang melahirkan perbuatan-perbuatan dengan mudah tanpa pemikiran dan pertimbangan.</p>
+<div class="dalil">📌 "Sesungguhnya aku diutus untuk menyempurnakan akhlak yang mulia." (HR. Ahmad & Al-Baihaqi)</div>
+<p><strong>Akhlak kepada Allah:</strong> Tauhid, ikhlas, tawakkal, syukur, sabar, ridha, taubat, khauf (takut), raja' (harap).</p>
+<p><strong>Akhlak kepada Rasulullah ﷺ:</strong> Mencintai, mentaati, mengikuti sunnah, bershalawat, memuliakan hadits.</p>
+<p><strong>Akhlak kepada sesama manusia:</strong></p>
+<ul>
+<li>Jujur (shidq), amanah, adil, tawadhu' (rendah hati)</li>
+<li>Berbuat baik kepada orang tua (birrul walidain)</li>
+<li>Menyambung silaturahmi</li>
+<li>Berlaku baik kepada tetangga</li>
+<li>Menjaga lisan dan tangan</li>
+<li>Memaafkan dan menahan marah</li>
+<li>Dermawan dan tidak kikir</li>
+</ul>
+<p><strong>Akhlak tercela yang harus dijauhi:</strong> Riya', sombong (takabbur), dengki (hasad), ghibah (menggunjing), namimah (adu domba), dusta, khianat.</p>`
+},
+{
+  cat: "umum",
+  keys: ["muamalah","jual beli","riba","muamalat","hukum jual beli","transaksi"],
+  ans: `<h3>🌍 Muamalah (Transaksi Islam)</h3>
+<p><strong>Muamalah</strong> adalah bagian dari fiqih yang mengatur <strong>hubungan antarmanusia</strong> dalam hal harta dan transaksi.</p>
+<p><strong>Jual Beli (Al-Bai'):</strong></p>
+<ul>
+<li><strong>Hukum asal:</strong> Mubah (boleh) berdasarkan QS. Al-Baqarah: 275</li>
+<li><strong>Syarat sah:</strong> Ridha kedua pihak, barang halal & bermanfaat, barang jelas & bisa diserahterimakan, penjual memiliki/menguasai barang</li>
+<li><strong>Rukun:</strong> Penjual, pembeli, barang, harga, ijab qabul</li>
+</ul>
+<p><strong>Riba (diharamkan):</strong></p>
+<ul>
+<li><strong>Riba Fadhl:</strong> Tukar-menukar barang sejenis dengan takaran berbeda (emas dengan emas, gandum dengan gandum)</li>
+<li><strong>Riba Nasi'ah:</strong> Penundaan pembayaran dalam tukar-menukar barang ribawi</li>
+<li><strong>Riba Qardh:</strong> Manfaat/tambahan yang disyaratkan dalam utang-piutang</li>
+</ul>
+<p><strong>Transaksi yang dilarang:</strong> Gharar (ketidakjelasan), Maysir (judi), Ihtikar (penimbunan), Najsy (pura-pura menawar), Bai'ul 'Inah.</p>
+<p><strong>Transaksi yang diperbolehkan:</strong> Murabahah, Mudharabah, Musyarakah, Salam, Istishna', Ijarah.</p>`
 }
-function autoResize(t) { t.style.height = 'auto'; t.style.height = Math.min(t.scrollHeight, 120) + 'px'; }
-function handleKeyPress(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
-function setStatus(t, status = 'online') {
-document.getElementById('statusText').textContent = t;
-document.getElementById('statusDot').className = `status-dot ${status}`;
-}
-function setApiStatus(t) { document.getElementById('apiStatus').textContent = `Sistem: ${t}`; }
-function clearChat() {
-const container = document.getElementById('chatContainer');
-const messages = container.querySelectorAll('.message');
-if (messages.length === 0) return;
-messages.forEach((msg, index) => setTimeout(() => msg.classList.add('fade-out'), index * 30));
-setTimeout(() => {
-container.innerHTML = getWelcomeHTML();
-setStatus('Siap', 'online');
-setApiStatus('Islamic Knowledge Engine: Active');
-}, messages.length * 30 + 300);
-}
-async function fetchWithRetry(url, opts = {}, retries = 2, timeout = 10000) {
-for (let i = 0; i <= retries; i++) {
-try {
-const ctrl = new AbortController();
-const tid = setTimeout(() => ctrl.abort(), timeout);
-const res = await fetch(url, { ...opts, signal: ctrl.signal });
-clearTimeout(tid);
-if (!res.ok) throw new Error(`HTTP ${res.status}`);
-return res;
-} catch (e) {
-if (i === retries) {
-if (!url.includes('corsproxy.io')) {
-try { const pr = await fetch(API.corsProxy(url), opts); if (pr.ok) return pr; } catch (_) {}
-}
-throw e;
-}
-await new Promise(r => setTimeout(r, 500 * (i + 1)));
-}
-}
+];
+
+// =============================================
+// SEARCH & MATCH ENGINE
+// =============================================
+function normalizeText(t) {
+  return t.toLowerCase()
+    .replace(/[''`]/g, "'")
+    .replace(/[^a-z0-9\s\u0600-\u06ff]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
-// ============================================
-// 5. PARSER MARKDOWN
-// ============================================
-function parseMarkdownToHTML(text) {
-if (!text) return '';
-text = text.replace(/```[a-z]*\n?([\s\S]*?)```/gi, '<pre>$1</pre>');
-text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
-text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
-text = text.replace(/^### (.*$)/gm, '<h3 style="color:#93c5fd;margin:10px 0 5px;">$1</h3>');
-text = text.replace(/^## (.*$)/gm, '<h2 style="color:#60a5fa;margin:12px 0 6px;">$1</h2>');
-text = text.replace(/^# (.*$)/gm, '<h1 style="color:#3b82f6;margin:14px 0 8px;">$1</h1>');
-text = text.replace(/^- (.*$)/gm, '• $1<br>');
-text = text.replace(/^\d+\. (.*$)/gm, '$1<br>');
-text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" style="color:#60a5fa;">$1</a>');
-text = text.replace(/\n/g, '<br>');
-return text;
+function findAnswer(query) {
+  const q = normalizeText(query);
+  const qWords = q.split(' ').filter(w => w.length > 2);
+
+  let bestMatch = null;
+  let bestScore = 0;
+
+  for (const entry of KB) {
+    let score = 0;
+
+    // Exact key match
+    for (const key of entry.keys) {
+      const nk = normalizeText(key);
+      if (q === nk) { score = 1000; break; }
+      if (q.includes(nk)) { score = Math.max(score, 500 + nk.length * 5); }
+      if (nk.includes(q) && q.length > 3) { score = Math.max(score, 300 + q.length * 3); }
+    }
+
+    // Word-level matching
+    if (score < 500) {
+      for (const qw of qWords) {
+        for (const key of entry.keys) {
+          const nk = normalizeText(key);
+          const kWords = nk.split(' ');
+          if (kWords.includes(qw)) score += 30;
+          else if (nk.includes(qw)) score += 15;
+        }
+        // Also match in answer text
+        if (normalizeText(entry.ans).includes(qw)) score += 5;
+      }
+    }
+
+    if (score > bestScore) {
+      bestScore = score;
+      bestMatch = entry;
+    }
+  }
+
+  if (bestScore >= 20) return bestMatch;
+  return null;
 }
 
-// ============================================
-// 6. DETEKSI INTENSI
-// ============================================
-function findReligiousContent(query) {
-const q = query.toLowerCase().trim().replace(/\s+/g, ' ');
-for (const [key, content] of Object.entries(RELIGIOUS_DB)) {
-if (q.includes(key) || q.includes(content.name.toLowerCase())) return { found: true, content, key };
-}
-return { found: false };
-}
-function findFigureInDB(query) {
-const q = query.toLowerCase().trim();
-for (const [key, figure] of Object.entries(FIGURE_DB)) {
-if (q.includes(key) || q.includes(figure.name.toLowerCase())) return { found: true, figure, key };
-}
-return { found: false };
-}
-function isIslamicQuery(q) {
-const s = q.toLowerCase();
-const keywords = ['quran','al-quran','alquran','ayat','surah','juz','tafsir','hadits','hadis','sunnah','bukhari','muslim','fiqih','fikih','fiqh','mazhab','syafi\'i','hanafi','maliki','hanbali','fatwa','aqidah','akidah','tauhid','akhlak','akhlaq','tasawuf','tarekat','nahwu','sharaf','sorof','i\'rab','irab','wazan','balaghah','shalat','salat','puasa','zakat','haji','doa','dzikir','sholawat','shalawat','islam','muslim','nabi','rasul','muhammad','allah','ulama','imam','syekh','kiai','ustadz','kitab','halal','haram','wajib','sunah','sunnah','sirah','muamalah','munakahat','jinayah','siyasah','bid\'ah','tasyabbuh'];
-return keywords.some(k => s.includes(k));
-}
-function detectQuranQuery(q) {
-const s = q.toLowerCase();
-const surahMatch = s.match(/surah\s+([a-z\s]+?)(?:\s+(?:ayat|ayatnya?|pasal)|\s*$|[\s,])/);
-const ayahMatch = s.match(/(?:ayat|ayatnya?)\s+(\d+)/);
-const surahNumberMatch = s.match(/surah\s+(\d+)/);
-return {
-isQuran: /\b(quran|al-quran|alquran|al quran|ayat|surah|juz|tafsir)\b/i.test(s),
-surahName: surahMatch ? surahMatch[1].trim() : null,
-surahNumber: surahNumberMatch ? parseInt(surahNumberMatch[1]) : null,
-ayahNumber: ayahMatch ? parseInt(ayahMatch[1]) : null,
-count: (s.match(/\b(\d+)\s*(?:ayat|surah)/) || [])[1] ? parseInt((s.match(/\b(\d+)\s*(?:ayat|surah)/) || [])[1]) : null
-};
-}
-function detectHadithQuery(q) {
-const s = q.toLowerCase();
-const bookMatch = s.match(/\b(bukhari|muslim|abu\s*dawud|tirmidzi|nasai|ibnu\s*majah)\b/);
-const numberMatch = s.match(/no\.?\s*(\d+)|nomor\s*(\d+)|no\s+(\d+)/);
-return {
-isHadith: /\b(hadits|hadis|sunnah|bukhari|muslim|abu dawud|tirmidzi|nasai|ibnu majah)\b/i.test(s),
-book: bookMatch ? bookMatch[1].trim() : null,
-number: numberMatch ? (numberMatch[1] || numberMatch[2] || numberMatch[3]) : null
-};
-}
-function detectIntent(q) {
-const s = q.toLowerCase().trim();
-const religiousCheck = findReligiousContent(s);
-if (religiousCheck.found) return { type: 'religious', content: religiousCheck.content, key: religiousCheck.key, query: q };
-if (isIslamicQuery(s)) {
-const quranQ = detectQuranQuery(s);
-const hadithQ = detectHadithQuery(s);
-if (quranQ.isQuran) return { type: 'quran', query: q, ...quranQ };
-if (hadithQ.isHadith) return { type: 'hadith', query: q, ...hadithQ };
-return { type: 'islamic', query: q };
-}
-if (/\b(kristen|katolik|protestan|buddha|hindu|konghucu|tridharma|alkitab|injil|wedha|veda|sutta|dhamma)\b/.test(s)) return { type: 'religious_general', query: q };
-const figureCheck = findFigureInDB(s);
-if (figureCheck.found) return { type: 'figure', figure: figureCheck.figure, key: figureCheck.key, query: q };
-return { type: 'general_search', query: q };
+function getDefaultAnswer(query) {
+  return `<h3>📚 Jawaban Umum</h3>
+<p>Terima kasih atas pertanyaan Anda: <em>"${query}"</em></p>
+<p>Saat ini, knowledge base saya mencakup topik-topik berikut secara mendalam:</p>
+<ul>
+<li><strong>Al-Quran:</strong> Pengertian, tajwid, tafsir, asbabun nuzul, makharijul huruf, waqaf, ayat kursi, Al-Fatihah, nuzulul quran</li>
+<li><strong>Hadits:</strong> Pengertian, pembagian, shahih, dhaif, qudsi, kutubus sittah, sanad-matan-rawi</li>
+<li><strong>Fiqih:</strong> Thaharah, shalat, puasa, zakat, haji, nikah, talak, mazhab, rukun Islam & Iman</li>
+<li><strong>Ushul Fiqih:</strong> Ijma, qiyas, amar-nahyi, am-khas, mujmal-mubayyan, nasikh-mansukh, maslahah mursalah</li>
+<li><strong>Nahwu:</strong> I'rab, jumlah ismiyyah/fi'liyyah, isim-fi'il-huruf, fa'il-maf'ul, huruf jar, tawabi'</li>
+<li><strong>Sharaf:</strong> Tashrif, fi'il madhi/mudhari/amr, isim musytaq, mujarrad-mazid, dhomir</li>
+<li><strong>Umum:</strong> Sirah, aqidah, akhlak, muamalah, malaikat, nabi & rasul, hari kiamat, surga-neraka, doa, adzan, kalender Hijriyah</li>
+</ul>
+<p>Silakan coba tanyakan dengan kata kunci yang lebih spesifik dari topik di atas! 😊</p>`;
 }
 
-// ============================================
-// 7. PENCARIAN WEB & FETCH DATA
-// ============================================
-async function searchWeb(query) {
-setStatus('Mencari data...', 'online');
-setApiStatus('Web Search Active');
-for (const instance of API.searxng) {
-try {
-const url = `${instance}?q=${encodeURIComponent(query)}&format=json&language=id&categories=general`;
-const res = await fetchWithRetry(url, { headers: { 'Accept': 'application/json' } }, 1, 8000);
-const data = await res.json();
-if (data.results && data.results.length > 0) {
-let context = `DATA DARI INTERNET UNTUK: "${query}"\n`;
-data.results.slice(0, 5).forEach((r, idx) => {
-context += `${idx + 1}. ${r.title}\nURL: ${r.url}\nSnippet: ${r.content || 'Tidak ada deskripsi'}\n`;
-});
-return { success: true, context, results: data.results.slice(0, 5) };
-}
-} catch (e) { continue; }
-}
-return { success: false, context: '', results: [] };
+// =============================================
+// UI FUNCTIONS
+// =============================================
+const chatArea = document.getElementById('chatArea');
+const userInput = document.getElementById('userInput');
+let currentFilter = 'semua';
+
+function filterCat(cat) {
+  currentFilter = cat;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
 }
 
-async function fetchQuranData(intent) {
-setApiStatus('Mengambil data Quran...');
-try {
-let surahNum = intent.surahNumber;
-if (!surahNum && intent.surahName) {
-const listRes = await fetchWithRetry(API.quran.surahList, {}, 1, 8000);
-const listData = await listRes.json();
-if (listData.data) {
-const found = listData.data.find(s => s.englishName.toLowerCase().includes(intent.surahName) || s.name.toLowerCase().includes(intent.surahName));
-if (found) surahNum = found.number;
-}
-}
-if (!surahNum) return null;
-const res = await fetchWithRetry(API.quran.byNumber(surahNum), {}, 1, 8000);
-const data = await res.json();
-if (data.code === 200 && data.data) {
-const arabicEdition = data.data.editions.find(e => e.language === 'ar');
-const idEdition = data.data.editions.find(e => e.language === 'id');
-return {
-surahName: data.data.englishName,
-surahNameAr: data.data.name,
-count: data.data.numberOfAyahs,
-ayahs: arabicEdition.ayahs.map((a, i) => ({
-number: a.numberInSurah,
-arabic: a.text,
-translation: idEdition ? idEdition.ayahs[i].text : '',
-numberGlobal: a.number
-}))
-};
-}
-} catch (e) { console.log('Quran API failed:', e); }
-return null;
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 100) + 'px';
 }
 
-async function fetchHadithData(intent) {
-setApiStatus('Mengambil data Hadits...');
-try {
-let url = null;
-const book = (intent.book || 'bukhari').toLowerCase().replace(/\s+/g, '');
-const num = intent.number || 1;
-if (book.includes('bukhari')) url = API.hadith.bukhari(num);
-else if (book.includes('muslim')) url = API.hadith.muslim(num);
-else if (book.includes('abudaud') || book.includes('abudawud')) url = API.hadith.abuDaud(num);
-else if (book.includes('tirmidzi')) url = API.hadith.tirmidzi(num);
-else if (book.includes('nasai')) url = API.hadith.nasai(num);
-else if (book.includes('ibnumajah') || book.includes('ibn')) url = API.hadith.ibnuMajah(num);
-else url = API.hadith.bukhari(num);
-const res = await fetchWithRetry(url, {}, 1, 8000);
-const data = await res.json();
-if (data.data) {
-return { book: data.data.available ? data.data.available.name : book, number: data.data.number, arabic: data.data.arab, translation: data.data.id };
-}
-} catch (e) { console.log('Hadith API failed:', e); }
-return null;
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
 }
 
-// ============================================
-// 8. AI RESPONSE ENGINE (3-LAPIS FALLBACK)
-// ============================================
-async function getAIResponse(query, searchContext = null, systemPrompt = null, temperature = 0.3) {
-setApiStatus('AI sedang berpikir...');
-const strictPrompt = (systemPrompt || "Kamu adalah asisten AI yang sangat cerdas dan komprehensif. Jawab dalam Bahasa Indonesia.") + 
-"\n\nATURAN MUTLAK: JANGAN PERNAH memberikan link pencarian Google, Wikipedia, atau menyuruh pengguna mencari sendiri. Kamu HARUS menjawab langsung dengan pengetahuanmu secara lengkap dan mendetail.";
-
-// Metode 1: Pollinations OpenAI POST
-try {
-const res = await fetch(API.aiPost, {
-method: 'POST',
-headers: { 'Content-Type': 'application/json' },
-body: JSON.stringify({ model: 'openai', messages: [{ role: 'system', content: strictPrompt }, { role: 'user', content: query }], temperature: temperature })
-});
-if (res.ok) {
-const d = await res.json();
-const t = d.choices?.[0]?.message?.content || d.choices?.[0]?.text || d.response || '';
-if (t && t.length > 20) return { text: parseMarkdownToHTML(t), success: true, method: 'POST' };
-}
-} catch (e) { console.log('AI POST failed:', e); }
-
-// Metode 2: Pollinations GET (openai)
-try {
-const fullQuery = searchContext ? `${searchContext}\n\nPertanyaan: ${query}` : query;
-const res = await fetchWithRetry(`https://text.pollinations.ai/${encodeURIComponent(fullQuery)}?model=openai&temperature=${temperature}`);
-const t = await res.text();
-if (t && t.length > 20) return { text: parseMarkdownToHTML(t), success: true, method: 'GET' };
-} catch (e) { console.log('AI GET failed:', e); }
-
-// Metode 3: Pollinations GET (openai-large) - Fallback terakhir AI
-try {
-const fullQuery = searchContext ? `${searchContext}\n\nPertanyaan: ${query}` : query;
-const res = await fetchWithRetry(`https://text.pollinations.ai/${encodeURIComponent(fullQuery)}?model=openai-large&temperature=${temperature}`);
-const t = await res.text();
-if (t && t.length > 20) return { text: parseMarkdownToHTML(t), success: true, method: 'GET-large' };
-} catch (e) { console.log('AI GET-large failed:', e); }
-
-return { text: '', success: false };
+function askQuick(btn) {
+  userInput.value = btn.textContent;
+  sendMessage();
 }
 
-// ============================================
-// 9. MAIN LOGIC
-// ============================================
-function addMessage(text, sender, isHtml = false) {
-const c = document.getElementById('chatContainer');
-const w = document.getElementById('welcomeScreen');
-if (w) w.remove();
-const m = document.createElement('div');
-m.className = `message ${sender}`;
-const av = document.createElement('div'); av.className = 'avatar'; av.textContent = sender === 'user' ? '👤' : '🤖';
-const b = document.createElement('div'); b.className = 'bubble';
-const ct = document.createElement('div'); ct.className = 'bubble-content';
-if (isHtml) ct.innerHTML = text; else ct.textContent = text;
-b.appendChild(ct);
-if (sender === 'ai') {
-const a = document.createElement('div'); a.className = 'bubble-actions';
-a.innerHTML = '<button class="action-btn" onclick="copyText(this)">📋 Salin</button>';
-b.appendChild(a);
-}
-m.appendChild(av); m.appendChild(b); c.appendChild(m);
-c.scrollTop = c.scrollHeight;
-return ct;
-}
-function showTyping() {
-const c = document.getElementById('chatContainer');
-const m = document.createElement('div'); m.className = 'message ai'; m.id = 'typingMsg';
-m.innerHTML = '<div class="avatar"></div><div class="bubble"><div class="typing-indicator"><span></span><span></span><span></span></div></div>';
-c.appendChild(m); c.scrollTop = c.scrollHeight;
-}
-function removeTyping() { const t = document.getElementById('typingMsg'); if (t) t.remove(); }
-function copyText(btn) {
-const t = btn.closest('.bubble').querySelector('.bubble-content').innerText;
-navigator.clipboard.writeText(t).then(() => { btn.textContent = '✅ Tersalin'; setTimeout(() => btn.textContent = '📋 Salin', 2000); });
+function sendMessage() {
+  const text = userInput.value.trim();
+  if (!text) return;
+
+  // Remove welcome card
+  const wc = document.querySelector('.welcome-card');
+  if (wc) wc.remove();
+
+  // Add user message
+  addMessage(text, 'user');
+  userInput.value = '';
+  userInput.style.height = 'auto';
+
+  // Show typing
+  const typingEl = addTyping();
+
+  // Process with delay for UX
+  setTimeout(() => {
+    typingEl.remove();
+
+    let result = findAnswer(text);
+
+    if (result && (currentFilter === 'semua' || result.cat === currentFilter)) {
+      addMessage(result.ans, 'bot', result.cat);
+    } else if (result && currentFilter !== 'semua') {
+      addMessage(getDefaultAnswer(text), 'bot', 'info');
+    } else {
+      addMessage(getDefaultAnswer(text), 'bot', 'info');
+    }
+  }, 800 + Math.random() * 700);
 }
 
-async function sendMessage() {
-const inp = document.getElementById('chatInput');
-const q = inp.value.trim();
-if (!q || isProcessing) return;
-isProcessing = true;
-document.getElementById('sendBtn').disabled = true;
-setStatus('Memproses...', 'online');
-inp.value = '';
-autoResize(inp);
-addMessage(q, 'user');
-showTyping();
+function addMessage(content, type, cat) {
+  const div = document.createElement('div');
+  div.className = `message ${type}`;
 
-const intent = detectIntent(q);
+  const catLabels = {
+    quran: '📖 Al-Quran', hadits: '📜 Hadits', fiqih: '⚖️ Fiqih',
+    ushul: '📐 Ushul Fiqih', nahwu: '🔤 Nahwu', sharaf: '🔄 Sharaf',
+    umum: '🌍 Umum', info: 'ℹ️ Info'
+  };
 
-try {
-let html = '', usedSearch = false, usedAI = false, usedAPI = false;
+  const avatar = type === 'bot' ? '🕌' : '👤';
+  const catTag = (type === 'bot' && cat && catLabels[cat])
+    ? `<span class="category-tag">${catLabels[cat]}</span>` : '';
 
-// === PRIORITAS 1: QURAN ===
-if (intent.type === 'quran') {
-setStatus('Mengambil data Al-Quran...', 'online');
-const quranData = await fetchQuranData(intent);
-if (quranData) {
-usedAPI = true;
-let count = intent.count || quranData.count;
-const ayahsToShow = quranData.ayahs.slice(0, count);
-html = `<strong>📖 Surah ${quranData.surahName} (${quranData.surahNameAr})</strong><br>`;
-html += `<em style="color:#94a3b8;font-size:0.85em;">Menampilkan ${ayahsToShow.length} dari ${quranData.count} ayat</em><br><br>`;
-ayahsToShow.forEach(ayah => {
-html += `<div style="margin-bottom:20px;padding-bottom:15px;border-bottom:1px dashed #334155;">`;
-html += `<div style="color:#60a5fa;font-weight:bold;margin-bottom:8px;">Ayat ${ayah.number}</div>`;
-html += `<div class="sacred-text">${ayah.arabic}</div>`;
-html += `<div class="translation-text"><strong>📖 Terjemahan:</strong><br>${ayah.translation}</div>`;
-html += `</div>`;
-});
-html += `<div class="source-text">📚 Sumber: API Al-Quran Cloud (quran-uthmani & id.indonesian)</div>`;
-if (/\b(tafsir|makna|penjelasan|arti)\b/i.test(q)) {
-html += `<br><strong>📚 Tafsir Ringkas:</strong><br>`;
-const tafsirPrompt = `Berikan tafsir ringkas dalam bahasa Indonesia untuk Surah ${quranData.surahName} ayat 1-${ayahsToShow.length}. Sertakan asbabun nuzul jika ada, dan pelajaran yang bisa diambil. Gunakan format yang rapi dengan teks Arab berharakat jika ada kutipan.`;
-const tafsirResult = await getAIResponse(tafsirPrompt, null, ISLAMIC_SYSTEM_PROMPT, 0.3);
-if (tafsirResult.success) { html += tafsirResult.text; usedAI = true; }
-}
-} else {
-const aiResult = await getAIResponse(q, null, ISLAMIC_SYSTEM_PROMPT, 0.3);
-if (aiResult.success) { html = aiResult.text; usedAI = true; } else { throw new Error('Gagal mengambil data Quran'); }
-}
-}
-// === PRIORITAS 2: HADITS ===
-else if (intent.type === 'hadith') {
-setStatus('Mengambil data Hadits...', 'online');
-const hadithData = await fetchHadithData(intent);
-if (hadithData) {
-usedAPI = true;
-html = `<strong>📚 Hadits ${hadithData.book}</strong><br>`;
-html += `<em style="color:#94a3b8;font-size:0.85em;">Nomor: ${hadithData.number}</em><br><br>`;
-html += `<div class="sacred-text">${hadithData.arabic}</div>`;
-html += `<div class="translation-text"><strong>📖 Terjemahan:</strong><br>${hadithData.translation}</div>`;
-html += `<div class="source-text">📚 Sumber: API Hadits Gading Dev</div>`;
-if (/\b(jelaskan|penjelasan|makna|tafsir|syarah|derajat|sanad)\b/i.test(q)) {
-html += `<br><strong>📖 Penjelasan:</strong><br>`;
-const syarahPrompt = `Berikan penjelasan/syarah singkat dalam bahasa Indonesia untuk hadits berikut:\nArab: ${hadithData.arabic}\nTerjemahan: ${hadithData.translation}\nSertakan: derajat hadits, pelajaran utama, dan konteks. Gunakan teks Arab berharakat jika perlu.`;
-const syarahResult = await getAIResponse(syarahPrompt, null, ISLAMIC_SYSTEM_PROMPT, 0.3);
-if (syarahResult.success) { html += syarahResult.text; usedAI = true; }
-}
-} else {
-const aiResult = await getAIResponse(q, null, ISLAMIC_SYSTEM_PROMPT, 0.3);
-if (aiResult.success) { html = aiResult.text; usedAI = true; } else { throw new Error('Gagal mengambil data Hadits'); }
-}
-}
-// === PRIORITAS 3: ISLAM UMUM ===
-else if (intent.type === 'islamic') {
-setStatus('Menganalisis khazanah Islam...', 'online');
-setApiStatus('Islamic AI Engine Active');
-const searchResult = await searchWeb(q);
-const context = searchResult.success ? searchResult.context : null;
-const aiResult = await getAIResponse(q, context, ISLAMIC_SYSTEM_PROMPT, 0.3);
-if (aiResult.success) { html = aiResult.text; usedAI = true; if (searchResult.success) usedSearch = true; }
-else {
-const aiResult2 = await getAIResponse(q, null, ISLAMIC_SYSTEM_PROMPT, 0.3);
-if (aiResult2.success) { html = aiResult2.text; usedAI = true; }
-else { throw new Error('AI gagal merespons'); }
-}
-}
-// === PRIORITAS 4: AGAMA UMUM LAINNYA ===
-else if (intent.type === 'religious_general') {
-const searchResult = await searchWeb(q);
-if (searchResult.success) {
-const aiResult = await getAIResponse(q, searchResult.context, null, 0.4);
-if (aiResult.success) { html = aiResult.text; usedSearch = true; usedAI = true; }
-else { throw new Error('AI gagal'); }
-} else {
-const aiResult = await getAIResponse(q, null, null, 0.4);
-if (aiResult.success) { html = aiResult.text; usedAI = true; }
-else { throw new Error('AI gagal'); }
-}
-}
-// === PRIORITAS 5: TOKOH ===
-else if (intent.type === 'figure') {
-const f = intent.figure;
-html = `<strong>👤 ${f.name}</strong><br><br><table>
-<tr><td>Nama</td><td><strong>${f.name}</strong></td></tr>
-<tr><td>Peran</td><td>${f.role}</td></tr>
-<tr><td>Lahir</td><td>📅 ${f.birth}</td></tr>
-<tr><td>Wafat/Status</td><td>${f.death ? '🕊️ ' + f.death : '✅ Masih Hidup'}</td></tr>
-${f.note ? `<tr><td>Catatan</td><td>${f.note}</td></tr>` : ''}
-</table><div style="margin-top:10px;font-size:0.8em;color:#94a3b8;border-top:1px solid #334155;padding-top:8px;">
-<span class="api-badge verified-badge">✅ Data Terverifikasi</span></div>`;
-}
-// === PRIORITAS 6: RELIGIOUS DB ===
-else if (intent.type === 'religious') {
-const c = intent.content;
-html = `<strong>📜 ${c.name} <span style="font-size:0.8em;color:#94a3b8;">(${c.religion})</span></strong><br><br>
-<div class="sacred-text">${c.text}</div>
-${c.latin !== '-' ? `<div class="latin-text"><strong>🔤 Bacaan:</strong><br>${c.latin}</div>` : ''}
-<div class="translation-text"><strong>📖 Arti/Makna:</strong><br>${c.translation}</div>
-<div class="source-text">📚 Sumber: ${c.source}</div>
-<div style="margin-top:10px;font-size:0.8em;color:#94a3b8;border-top:1px solid #334155;padding-top:8px;">
-<span class="api-badge verified-badge">✅ Teks Terverifikasi</span></div>`;
-}
-// === PRIORITAS 7: UMUM ===
-else {
-const searchResult = await searchWeb(q);
-if (searchResult.success) {
-const aiResult = await getAIResponse(q, searchResult.context, null, 0.5);
-if (aiResult.success) { html = aiResult.text; usedSearch = true; usedAI = true; }
-else { throw new Error('AI gagal'); }
-} else {
-const aiResult = await getAIResponse(q, null, null, 0.5);
-if (aiResult.success) { html = aiResult.text; usedAI = true; }
-else { throw new Error('AI gagal'); }
-}
+  div.innerHTML = `
+    <div class="msg-avatar">${avatar}</div>
+    <div class="msg-bubble">
+      ${catTag}
+      ${content}
+    </div>
+  `;
+
+  chatArea.appendChild(div);
+  chatArea.scrollTop = chatArea.scrollHeight;
 }
 
-// Tambahkan badge sumber
-if (usedAI || usedSearch || usedAPI) {
-html += `<div style="margin-top:10px;font-size:0.8em;color:#94a3b8;border-top:1px solid #334155;padding-top:8px;">`;
-if (intent.type === 'quran') html += `<span class="api-badge verified-badge">📖 Quran API</span>`;
-else if (intent.type === 'hadith') html += `<span class="api-badge verified-badge">📚 Hadith API</span>`;
-else if (intent.type === 'islamic') html += `<span class="api-badge verified-badge">🕌 Islamic AI Engine</span>`;
-else html += `<span class="api-badge verified-badge">✅ Diverifikasi</span>`;
-if (usedSearch) html += `<span class="api-badge" style="background:#4285f4;">🔍 Web Search</span>`;
-if (usedAI) html += `<span class="api-badge" style="background:#8b5cf6;">🤖 AI Model</span>`;
-html += `</div>`;
+function addTyping() {
+  const div = document.createElement('div');
+  div.className = 'message bot';
+  div.innerHTML = `
+    <div class="msg-avatar">🕌</div>
+    <div class="msg-bubble">
+      <div class="typing"><span></span><span></span><span></span></div>
+    </div>
+  `;
+  chatArea.appendChild(div);
+  chatArea.scrollTop = chatArea.scrollHeight;
+  return div;
 }
 
-removeTyping();
-addMessage(html, 'ai', true);
-setStatus('Selesai', 'online');
-
-} catch (e) {
-removeTyping();
-console.error("Error in sendMessage:", e);
-
-// ==========================================
-// FALLBACK CERDAS: JANGAN PERNAH BERI LINK PENCARIAN KE PENGGUNA
-// AI akan tetap memberikan jawaban bermakna berdasarkan kata kunci
-// ==========================================
-let fallbackHtml = '';
-if (isIslamicQuery(q)) {
-fallbackHtml = `<strong>🕌 Jawaban Berdasarkan Khazanah Islam:</strong><br><br>
-<p>Berdasarkan pertanyaan Anda tentang "<em>${q}</em>", dalam khazanah keislaman, topik ini merujuk pada prinsip-prinsip yang bersumber dari Al-Quran dan As-Sunnah.</p>
-<p>Para ulama menekankan pentingnya memahami konteks secara menyeluruh. Secara umum, pembahasan terkait hal ini dibangun di atas kaidah-kaidah syar'i yang telah ditetapkan oleh para imam mazhab yang muktabar (Hanafi, Maliki, Syafi'i, Hanbali).</p>
-<p>Sebagai rujukan awal yang otentik, Anda dapat merujuk pada kitab-kitab induk seperti <em>Tafsir Ibnu Katsir</em> untuk pemahaman ayat, atau <em>Shahih Bukhari/Muslim</em> untuk landasan hadits, yang membahas topik ini secara komprehensif.</p>
-<div class="source-text">📚 Catatan: Jawaban ini disusun berdasarkan prinsip umum ilmu agama Islam. AI selalu berusaha memberikan informasi terbaik dari pengetahuannya tanpa membebani Anda dengan pencarian manual.</div>`;
-} else {
-fallbackHtml = `<strong>💡 Informasi Umum:</strong><br><br>
-<p>Mengenai "<em>${q}</em>", berikut adalah rangkuman informasi yang dapat saya sampaikan berdasarkan basis pengetahuan umum:</p>
-<p>Topik ini merupakan bagian dari wawasan yang luas. Secara fundamental, hal ini berkaitan dengan konteks yang perlu dipahami secara menyeluruh. Saya menyarankan untuk menelaah aspek-aspek utamanya secara bertahap.</p>
-<p>Jika Anda memiliki aspek spesifik yang ingin didalami (misalnya: definisi, sejarah, atau cara kerja), silakan tanyakan kembali, dan saya akan berusaha menjelaskannya secara lebih rinci.</p>`;
-}
-addMessage(fallbackHtml, 'ai', true);
-setStatus('Selesai (Mode Offline Cerdas)', 'online');
-
-} finally {
-isProcessing = false;
-document.getElementById('sendBtn').disabled = false;
-inp.focus();
-}
-}
-
-// ============================================
-// 10. INPUT SUARA & INIT
-// ============================================
-function startVoice() {
-if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-alert('Browser tidak mendukung input suara. Gunakan Chrome.'); return;
-}
-const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-const rec = new SR(); rec.lang = 'id-ID'; rec.interimResults = false;
-const btn = document.querySelector('.input-btn');
-btn.textContent = '🔴'; btn.style.color = '#ef4444';
-rec.onresult = (e) => { document.getElementById('chatInput').value = e.results[0][0].transcript; autoResize(document.getElementById('chatInput')); };
-rec.onend = rec.onerror = () => { btn.textContent = '🎤'; btn.style.color = '#94a3b8'; };
-rec.start();
-}
-
-window.onload = () => {
-document.getElementById('chatContainer').innerHTML = getWelcomeHTML();
-document.getElementById('chatInput').focus();
-};
+// Focus input on load
+userInput.focus();
 </script>
 </body>
 </html>
